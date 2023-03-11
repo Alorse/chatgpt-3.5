@@ -85,9 +85,8 @@ const ChatView = () => {
       setThinking(false)
     } else {
       // The request failed
-      window.alert(`openAI is returning an error: ${response.status + response.statusText} 
-      please try again later`)
-      console.log(`Request failed with status code ${response.status}`)
+      window.alert(`openAI is returning an error: ${response.status + response.statusText} please try again later`)
+      console.log(`Request failed with status ${response.statusText}`)
       setThinking(false)
     }
 
@@ -154,8 +153,10 @@ const ChatView = () => {
         <button type="submit" className='chatview__btn-send' disabled={!formValue}><MdSend /></button>
       </form>
       <div className="text-center text-xs text-black/50 dark:text-white/50 md:px-4 md:pt-1 md:pb-3">
-        Free Research Preview. This is a modified version of ChatGPT by <a target="_blank" rel="noreferrer" href="https://github.com/alorse">Alorse</a> (gpt-3.5-turbo).
-        </div>
+        Free Research Preview.
+        This is a modified version of ChatGPT by 
+        <a target="_blank" rel="noreferrer" href="https://github.com/alorse">Alorse</a> (gpt-3.5-turbo).
+      </div>
     </div>
   )
 }

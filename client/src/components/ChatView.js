@@ -3,6 +3,7 @@ import ChatMessage from './ChatMessage'
 import { ChatContext } from '../context/chatContext'
 import { auth } from '../firebase'
 import Thinking from './Thinking'
+import { MdSend } from 'react-icons/md'
 
 /**
  * A chat view component that displays a list of messages and a form for sending new messages.
@@ -77,7 +78,6 @@ const ChatView = () => {
     const data = await response.json()
     setLimit(data.limit)
 
-    console.log(response.status)
     if (response.ok) {
       // The request was successful
       data.bot && updateMessage(data.bot, true, aiModel)
@@ -92,6 +92,24 @@ const ChatView = () => {
     }
 
     setThinking(false)
+  }
+
+  const handleChange = e => {
+    setFormValue(e.target.value)
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      sendMessage(e);
+    }
+  }
+
+  const handleKeyUp = (e) => {
+    let minus = formValue.includes("\n") || formValue.length > 86 ? 0 : 24;
+    inputRef.current.style.height = "auto";
+    inputRef.current.style.height = `${inputRef.current.scrollHeight-minus}px`;
+    console.log(inputRef.current.scrollHeight)
   }
 
   /**
@@ -125,9 +143,19 @@ const ChatView = () => {
           <option>{options[0]}</option>
           <option>{options[1]}</option>
         </select>
-        <textarea ref={inputRef} className='chatview__textarea-message' value={formValue} onChange={(e) => setFormValue(e.target.value)} />
-        <button type="submit" className='chatview__btn-send' disabled={!formValue}>Send</button>
+        <textarea
+          ref={inputRef}
+          className='chatview__textarea-message'
+          value={formValue}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          onKeyUp={handleKeyUp}
+        />
+        <button type="submit" className='chatview__btn-send' disabled={!formValue}><MdSend /></button>
       </form>
+      <div className="text-center text-xs text-black/50 dark:text-white/50 md:px-4 md:pt-1 md:pb-3">
+        Free Research Preview. This is a modified version of ChatGTP by <a target="_blank" rel="noreferrer" href="https://github.com/alorse">Alorse</a>.
+        </div>
     </div>
   )
 }

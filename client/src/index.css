@@ -60,7 +60,7 @@
   }
 
   .nav__msg{
-    @apply flex bg-yellow-900 rounded-xl p-4 text-white;
+    @apply flex bg-yellow-900 rounded-lg p-4 text-white;
   }
 
   .nav__p{
@@ -75,19 +75,19 @@
   }
 
   .chatview__chatarea {
-    @apply flex-grow w-full overflow-y-scroll flex flex-col m-2 shadow-md;
+    @apply m-0 flex-grow w-full overflow-y-scroll flex flex-col shadow-md;
   }
   
   .form{
     @apply flex justify-between flex-col items-stretch sm:flex-row m-2 bottom-0 left-0 right-0
-    text-black dark:text-white duration-300;
+    text-black dark:text-white duration-300 w-9/12 mx-auto;
   }
 
   .dropdown {
-    @apply dark:bg-light-grey h-16 px-4 rounded-xl bg-light-white hover:bg-slate-200 hover:dark:bg-dark-grey border border-light-grey
+    @apply dark:bg-light-grey h-10 px-4 rounded-lg bg-light-white hover:bg-slate-200 hover:dark:bg-dark-grey
     dark:border-dark-grey focus:ring-offset-indigo-200 text-black dark:text-white transition 
     ease-in-out duration-300 text-center text-base font-semibold shadow-md 
-    focus:outline-none focus:ring-2 focus:ring-offset-2;
+    focus:outline-none;
   }
 
   .message__img {
@@ -95,14 +95,14 @@
   }
 
   .chatview__textarea-message{
-    @apply bg-light-white text-xl h-16 sm:w-screen max-h-[20rem] min-h-[4rem] p-2 dark:bg-light-grey
-    border border-light-grey dark:border-dark-grey overflow-y-hidden mx-2
-    focus:ring-offset-indigo-200 focus:ring-2 focus:ring-offset-2
-    resize-y rounded-xl;
+    @apply bg-light-white text-base h-10 sm:w-screen max-h-[20rem] min-h-[2rem] p-2 dark:bg-light-grey
+    dark:border-dark-grey mx-2
+    focus:outline-none
+    resize-y rounded-lg;
   }
 
   .chatview__btn-send{
-    @apply h-16 px-4 rounded-xl hover:bg-slate-200 hover:dark:bg-dark-grey border border-light-grey
+    @apply h-10 px-4 rounded-lg hover:bg-slate-200 hover:dark:bg-dark-grey
     dark:border-dark-grey focus:ring-offset-indigo-200 text-black dark:text-white transition 
     ease-in-out duration-300 text-center text-base font-semibold shadow-md 
     focus:outline-none focus:ring-2 focus:ring-offset-2;
@@ -115,7 +115,10 @@
 
   /* ChatMessage */
   .message{
-    @apply  gap-2 py-2 m-2 flex items-start justify-between;
+    @apply  gap-2 py-2 flex items-start justify-between;
+  }
+  .message-w{
+    @apply w-9/12 mx-auto flex justify-between px-2 py-5;
   }
 
   .message__wrapper{
@@ -123,7 +126,7 @@
   }
 
   .message__markdown{
-    @apply text-xl text-slate-700 dark:text-slate-200;
+    @apply text-base text-slate-700 dark:text-slate-200;
   }
 
   .message__createdAt{
@@ -149,7 +152,7 @@
   }
 
   .signin__btn{
-    @apply h-12 px-4 rounded-xl bg-slate-100 hover:bg-slate-300 border
+    @apply h-12 px-4 rounded-lg bg-slate-100 hover:bg-slate-300 border
      border-light-grey focus:ring-offset-indigo-200 text-black transition 
     ease-in-out duration-300 text-center text-base font-semibold shadow-md 
     focus:outline-none focus:ring-2 focus:ring-offset-2;
@@ -166,5 +169,20 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-light-grey dark:bg-dark-grey rounded-xl;
+  @apply bg-light-grey dark:bg-dark-grey rounded-lg;
+}
+
+.dark .flex-row-reverse{
+  background-color: rgba(68,70,84,var(--tw-bg-opacity));
+}
+.dark .chatview__textarea-message {
+  background-color: rgba(68,70,84,var(--tw-bg-opacity)) !important;
+}
+
+.flex-row-reverse{
+  background-color: rgba(247,247,248,var(--tw-bg-opacity));
+}
+
+pre div {
+  background-color: rgba(0,0,0,var(--tw-bg-opacity)) !important;
 }

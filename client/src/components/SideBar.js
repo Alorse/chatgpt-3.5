@@ -1,5 +1,11 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { MdClose, MdMenu, MdAdd, MdOutlineLogout, MdOutlineQuestionAnswer, MdOutlineCoffee } from 'react-icons/md'
+import { MdClose,
+  MdMenu,
+  MdAdd,
+  MdOutlineLogout,
+  MdOutlineQuestionAnswer,
+  MdOutlineCoffee,
+ } from 'react-icons/md'
 import { ChatContext } from '../context/chatContext'
 import bot from '../assets/bot.ico'
 import DarkMode from './DarkMode'
@@ -59,11 +65,10 @@ const SideBar = () => {
           <h1 className={`${!open && "hidden"}`}>New chat</h1>
         </span>
       </div>
-      {limit >= 0 &&
+      {limit !== null && limit >= 0 &&
         <div className={`nav__msg ${!open && "scale-0 hidden"}`}>
           <p className='nav__p'>
-            you have {limit} requests left today.
-
+            You have {limit} requests left today.
           </p>
         </div>}
 

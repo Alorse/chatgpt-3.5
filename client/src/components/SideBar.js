@@ -44,7 +44,7 @@ const SideBar = () => {
   }
 
   return (
-    <section className={` ${open ? "w-72" : "w-16"} sidebar`}>
+    <section className={` ${open ? "w-64" : "w-16"} sidebar`}>
       <div className="sidebar__app-bar">
         <div className={`sidebar__app-logo ${!open && "scale-0 hidden"} `}>
           <span className='w-8 h-8'><img src={bot} alt="" /></span>

@@ -99,6 +99,7 @@
     dark:border-dark-grey mx-2
     focus:outline-none
     resize-y rounded-lg;
+    background-color: rgba(247,247,248,var(--tw-bg-opacity));
   }
 
   .chatview__btn-send{

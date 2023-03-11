@@ -183,6 +183,9 @@
   background-color: rgba(247,247,248,var(--tw-bg-opacity));
 }
 
-pre div {
+pre div + div {
   background-color: rgba(0,0,0,var(--tw-bg-opacity)) !important;
+  margin-top: 0px !important;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }

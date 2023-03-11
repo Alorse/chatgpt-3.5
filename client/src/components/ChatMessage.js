@@ -1,11 +1,10 @@
 import React from 'react'
 import { MdComputer } from 'react-icons/md'
 import ReactMarkdown from 'react-markdown'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import remarkGfm from 'remark-gfm'
 import moment from 'moment'
 import Image from './Image'
+import CodeBlock from './CodeBlock';
 
 /**
  * A chat message component that displays a message with a timestamp and an icon.
@@ -18,38 +17,28 @@ const ChatMessage = (props) => {
   return (
     <div key={id} className={`${ai && 'flex-row-reverse'} message`}>
       <div className={`${ai && 'flex-row-reverse'} message-w`}>
-      {
-        selected === 'DALL·E' && ai ?
-          <Image url={text} />
-          :
-          <div className='message__wrapper'>
-            <ReactMarkdown className={`message__markdown ${ai ? 'text-left' : 'text-right'}`}
-              children={text}
-              remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
-              components={{
-                code({ node, inline, className, children, ...props }) {
-                  const match = /language-(\w+)/.exec(className || 'language-js')
-                  return !inline && match ? (
-                    <SyntaxHighlighter
-                      children={String(children).replace(/\n$/, '')}
-                      style={vscDarkPlus} language={match[1]} PreTag="div" {...props}
-                    />
-                  ) : (<code className={className} {...props}>{children} </code>)
-                }
-              }} />
-
-
-            <div className={`${ai ? 'text-left' : 'text-right'} message__createdAt`}>{moment(createdAt).calendar()}</div>
-          </div>
-        }
-      
-
-      <div className="message__pic">
         {
-          ai ? <MdComputer /> :
-            <img className='cover w-10 h-10 rounded-full' loading='lazy' src={picUrl} alt='profile pic' />
+          selected === 'DALL·E' && ai ?
+            <Image url={text} />
+            :
+            <div className='message__wrapper'>
+              <ReactMarkdown className={`message__markdown ${ai ? 'text-left' : 'text-right'}`}
+                children={text}
+                remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
+                components={{
+                  code: CodeBlock,
+                }} />
+              <div className={`${ai ? 'text-left' : 'text-right'} message__createdAt`}>{moment(createdAt).calendar()}</div>
+            </div>
         }
-      </div>
+
+
+        <div className="message__pic">
+          {
+            ai ? <MdComputer /> :
+              <img className='cover w-10 h-10 rounded-full' loading='lazy' src={picUrl} alt='profile pic' />
+          }
+        </div>
       </div>
     </div>
   )

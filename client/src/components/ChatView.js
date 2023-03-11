@@ -154,7 +154,7 @@ const ChatView = () => {
         <button type="submit" className='chatview__btn-send' disabled={!formValue}><MdSend /></button>
       </form>
       <div className="text-center text-xs text-black/50 dark:text-white/50 md:px-4 md:pt-1 md:pb-3">
-        Free Research Preview. This is a modified version of ChatGTP by <a target="_blank" rel="noreferrer" href="https://github.com/alorse">Alorse</a>.
+        Free Research Preview. This is a modified version of ChatGPT by <a target="_blank" rel="noreferrer" href="https://github.com/alorse">Alorse</a>.
         </div>
     </div>
   )

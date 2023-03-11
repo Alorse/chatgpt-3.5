@@ -65,7 +65,7 @@ app.post('/davinci', async (req, res) => {
     // Call OpenAI API
     const { prompt, user } = req.body
     const cleanPrompt = filter.isProfane(prompt) ? filter.clean(prompt) : prompt
-    console.log(cleanPrompt)
+    // console.log(cleanPrompt)
 
     const response = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
@@ -83,8 +83,8 @@ app.post('/davinci', async (req, res) => {
       presence_penalty: 0.2,
     })
 
-    console.log(response.data.choices[0].message.content)
-    console.log(user)
+    // console.log(response.data.choices[0].message.content)
+    // console.log(user)
     // Return response from OpenAI API
     res.status(200).send({
       bot: response.data.choices[0].message.content,

@@ -18,8 +18,15 @@ type Response struct {
 	Limit *int   `json:"limit"`
 }
 
-func main() {
+type ReqBody struct {
+	Prompt string `json:"prompt"`
+	User   string `json:"user"`
+}
 
+var client *openai.Client
+var reqBody ReqBody
+
+func main() {
 	errLoad := godotenv.Load()
 	if errLoad != nil {
 		log.Fatal("Error loading .env file")
@@ -29,18 +36,13 @@ func main() {
 	// Configuración de CORS
 	r.Use(cors.Default())
 
-	r.POST("/davinci", callGTP)
+	r.POST("/davinci", callDavinci)
+	r.POST("/dalle", callDalle)
 	r.Run()
 }
 
-func callGTP(c *gin.Context) {
-	client := openai.NewClient(os.Getenv("OPENAI_API_KEY"))
-
-	// Obtener los parámetros pasados por POST
-	var reqBody struct {
-		Prompt string `json:"prompt"`
-		User   string `json:"user"`
-	}
+func callDavinci(c *gin.Context) {
+	client = openai.NewClient(os.Getenv("OPENAI_API_KEY"))
 	err := c.ShouldBindJSON(&reqBody)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -86,6 +88,34 @@ func callGTP(c *gin.Context) {
 
 	c.JSON(http.StatusOK, Response{
 		Bot:   resp.Choices[0].Message.Content,
+		Limit: nil,
+	})
+}
+
+func callDalle(c *gin.Context) {
+	client = openai.NewClient(os.Getenv("OPENAI_API_KEY"))
+	err := c.ShouldBindJSON(&reqBody)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	resp, err := client.CreateImage(context.Background(), openai.ImageRequest{
+		Prompt: reqBody.Prompt,
+		N:      1,
+		Size:   openai.CreateImageSize256x256,
+		User:   reqBody.User,
+	})
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	url := resp.Data[0].URL
+
+	c.JSON(http.StatusOK, Response{
+		Bot:   url,
 		Limit: nil,
 	})
 }

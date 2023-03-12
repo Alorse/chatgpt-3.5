@@ -7,7 +7,28 @@ const SignIn = () => {
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider()
-    await signInWithPopup(auth, provider)
+    const result = await signInWithPopup(auth, provider)
+    if (result.user) {
+      saveUserData(result.user)
+    }
+  }
+
+  const saveUserData = async (user) => {
+    const BASE_URL = process.env.REACT_APP_BASE_URL
+    const response = await fetch(BASE_URL + 'signin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: user.uid,
+        email: user.email,
+        name: user.displayName
+      })
+    })
+    if (!response.ok) {
+      console.error('Failed to save user data')
+    }
   }
 
   return (

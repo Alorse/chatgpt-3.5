@@ -7,11 +7,20 @@ import (
 	"net/http"
 	"os"
 
+	"servergpt/database"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	openai "github.com/sashabaranov/go-openai"
 )
+
+type User struct {
+	ID    string `json:"id"`
+	Email string `json:"email"`
+	Name  string `json:"name"`
+	Photo string `json:"photo"`
+}
 
 type Response struct {
 	Bot   string `json:"bot"`
@@ -25,20 +34,58 @@ type ReqBody struct {
 
 var client *openai.Client
 var reqBody ReqBody
+var DB *database.Database
 
 func main() {
 	errLoad := godotenv.Load()
 	if errLoad != nil {
 		log.Fatal("Error loading .env file")
 	}
+	bdConnection()
 
 	r := gin.Default()
 	// Configuración de CORS
 	r.Use(cors.Default())
 
+	r.POST("/signin", callSignIn)
 	r.POST("/davinci", callDavinci)
 	r.POST("/dalle", callDalle)
 	r.Run()
+}
+
+func callSignIn(c *gin.Context) {
+	var user User
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	sql := `SELECT COUNT(*) FROM users WHERE id = ?;`
+	var count int
+	err := DB.GetConnection().QueryRow(sql, user.ID).Scan(&count)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if count > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User already exists"})
+		return
+	}
+
+	sql = `INSERT INTO users (id, email, name) VALUES (?, ?, ?);`
+
+	args := []interface{}{}
+	args = append(args, user.ID)
+	args = append(args, user.Email)
+	args = append(args, user.Name)
+
+	rows, err := DB.GetConnection().Query(sql, args...)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
 
 func callDavinci(c *gin.Context) {
@@ -118,4 +165,27 @@ func callDalle(c *gin.Context) {
 		Bot:   url,
 		Limit: nil,
 	})
+}
+
+func bdConnection() {
+	DB = database.NewDatabase(
+		"mysql",
+		os.Getenv("DB_DATABASE"),
+		os.Getenv("DB_USERNAME"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"))
+	errConnecton := DB.Connect()
+	if errConnecton != nil {
+		log.Printf("Could not connect to database: %s", errConnecton)
+		os.Exit(11)
+	} else {
+		var test string
+		err2 := DB.GetConnection().QueryRow("SELECT COUNT(*) FROM users").Scan(&test)
+		if err2 != nil {
+			log.Printf("Could not connect to database: %s", err2)
+			os.Exit(11)
+		}
+		log.Printf("Connected to database successfully")
+	}
 }

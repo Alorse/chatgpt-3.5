@@ -15,7 +15,7 @@
 
   /* SideBar */
   .sidebar{
-    @apply flex flex-col gap-y-4 h-screen bg-dark-grey p-5 pt-8 relative duration-300;
+    @apply flex flex-col gap-y-4 h-screen bg-green-900 bg-opacity-90 p-5 pt-8 relative duration-300;
   }
 
   .sidebar__app-bar{
@@ -84,7 +84,7 @@
   }
 
   .dropdown {
-    @apply dark:bg-light-grey h-10 px-4 rounded-lg bg-light-white hover:bg-slate-200 hover:dark:bg-dark-grey
+    @apply dark:bg-light-grey h-10 px-4 rounded-lg bg-light-white hover:bg-slate-200 hover:dark:bg-green-900
     dark:border-dark-grey focus:ring-offset-indigo-200 text-black dark:text-white transition 
     ease-in-out duration-300 text-center text-base font-semibold shadow-md 
     focus:outline-none;
@@ -95,15 +95,14 @@
   }
 
   .chatview__textarea-message{
-    @apply bg-light-white text-base h-10 sm:w-screen max-h-[20rem] min-h-[2rem] p-2 dark:bg-light-grey
+    @apply bg-gray-100 text-base h-10 sm:w-screen max-h-[20rem] min-h-[2rem] p-2 dark:bg-dark-grey
     dark:border-dark-grey mx-2
     focus:outline-none
     resize-y rounded-lg;
-    background-color: rgba(247,247,248,var(--tw-bg-opacity));
   }
 
   .chatview__btn-send{
-    @apply h-10 px-4 rounded-lg hover:bg-slate-200 hover:dark:bg-dark-grey
+    @apply h-10 px-4 rounded-lg hover:bg-slate-200 hover:dark:bg-green-900
     dark:border-dark-grey focus:ring-offset-indigo-200 text-black dark:text-white transition 
     ease-in-out duration-300 text-center text-base font-semibold shadow-md 
     focus:outline-none focus:ring-2 focus:ring-offset-2;
@@ -145,7 +144,7 @@
   /* Signin Page */
 
   .signin{
-    @apply flex flex-col justify-center items-center h-screen w-screen overflow-hidden bg-dark-grey;
+    @apply flex flex-col justify-center items-center h-screen w-screen overflow-hidden bg-green-900;
   }
 
   .signin__container{
@@ -163,6 +162,14 @@
     @apply text-white text-center font-bold p-2;
   }
 
+  .flex-row-reverse{
+    @apply bg-gray-100 dark:bg-gray-600;
+  }
+  
+  pre div + div {
+    @apply bg-black !important;
+    margin-top: 0px !important;
+  }
 }
 
 ::-webkit-scrollbar {
@@ -171,22 +178,4 @@
 
 ::-webkit-scrollbar-thumb {
   @apply bg-light-grey dark:bg-dark-grey rounded-lg;
-}
-
-.dark .flex-row-reverse{
-  background-color: rgba(68,70,84,var(--tw-bg-opacity));
-}
-.dark .chatview__textarea-message {
-  background-color: rgba(68,70,84,var(--tw-bg-opacity)) !important;
-}
-
-.flex-row-reverse{
-  background-color: rgba(247,247,248,var(--tw-bg-opacity));
-}
-
-pre div + div {
-  background-color: rgba(0,0,0,var(--tw-bg-opacity)) !important;
-  margin-top: 0px !important;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
 }

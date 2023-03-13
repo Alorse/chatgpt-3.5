@@ -22,12 +22,24 @@ const ChatMessage = (props) => {
             <Image url={text} />
             :
             <div className='message__wrapper'>
-              <ReactMarkdown className={`message__markdown ${ai ? 'text-left' : 'text-right'}`}
-                children={text}
-                remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
-                components={{
-                  code: CodeBlock,
-                }} />
+              {
+                ai ? 
+                  <ReactMarkdown className={`message__markdown text-left`}
+                      children={text}
+                      remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
+                      components={{
+                        code: CodeBlock,
+                      }} />
+                  :
+                  <div className="message__markdown text-right">
+                    {text.split('\n').map((line, index) => (
+                      <React.Fragment key={index}>
+                        <span>{line}</span>
+                        <br/> 
+                      </React.Fragment>
+                    ))}
+                  </div>
+              }
               <div className={`${ai ? 'text-left' : 'text-right'} message__createdAt`}>{moment(createdAt).calendar()}</div>
             </div>
         }

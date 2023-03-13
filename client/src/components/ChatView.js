@@ -108,7 +108,6 @@ const ChatView = () => {
     let minus = formValue.includes("\n") || formValue.length > 86 ? 0 : 24;
     inputRef.current.style.height = "auto";
     inputRef.current.style.height = `${inputRef.current.scrollHeight-minus}px`;
-    console.log(inputRef.current.scrollHeight)
   }
 
   /**

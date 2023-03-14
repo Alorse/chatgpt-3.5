@@ -1,7 +1,7 @@
 CREATE TABLE `messages` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(255) DEFAULT NULL,
-  `room_id` bigint unsigned NOT NULL,
+  `id` CHAR(36) NOT NULL,
+  `user_id` CHAR(32) NOT NULL,
+  `room_id` CHAR(36) NOT NULL,
   `message_text` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -9,7 +9,8 @@ CREATE TABLE `messages` (
 );
 
 CREATE TABLE `rooms` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` CHAR(36) NOT NULL,
+  `user_id` CHAR(32) NOT NULL,
   `name` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -17,10 +18,11 @@ CREATE TABLE `rooms` (
 );
 
 CREATE TABLE `users` (
-  `id` varchar(255) NOT NULL,
+  `id` CHAR(32) NOT NULL,
   `name` text NOT NULL,
   `email` text NOT NULL,
   `password` text,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 );
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `created_at`) VALUES ('0', 'AI', 'gpt@openai.com', NULL, CURRENT_TIMESTAMP);

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"servergpt/models"
 
 	"github.com/gin-gonic/gin"
 	openai "github.com/sashabaranov/go-openai"
@@ -13,14 +14,10 @@ import (
 type Response struct {
 	Bot   string `json:"bot"`
 	Limit *int   `json:"limit"`
+	Room  string `json:"room"`
 }
 
-type ReqBody struct {
-	Prompt string `json:"prompt"`
-	User   string `json:"user"`
-}
-
-var reqBody ReqBody
+var reqBody models.ReqBody
 var client *openai.Client
 
 func CreateChatCompletion(c *gin.Context) {
@@ -30,7 +27,7 @@ func CreateChatCompletion(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
+	roomID, errCNR := CreateNewRoom(reqBody)
 	cleanedPrompt := reqBody.Prompt
 
 	if cleanedPrompt == "" {
@@ -43,18 +40,6 @@ func CreateChatCompletion(c *gin.Context) {
 		openai.ChatCompletionRequest{
 			Model: openai.GPT3Dot5Turbo,
 			Messages: []openai.ChatCompletionMessage{
-				{
-					Role:    openai.ChatMessageRoleSystem,
-					Content: "you're an a AI assistant that replies to all my questions in markdown format.",
-				},
-				{
-					Role:    openai.ChatMessageRoleUser,
-					Content: "hi",
-				},
-				{
-					Role:    openai.ChatMessageRoleAssistant,
-					Content: "Hi! How can I help you?",
-				},
 				{
 					Role:    openai.ChatMessageRoleUser,
 					Content: cleanedPrompt + "?",
@@ -71,7 +56,32 @@ func CreateChatCompletion(c *gin.Context) {
 	c.JSON(http.StatusOK, Response{
 		Bot:   resp.Choices[0].Message.Content,
 		Limit: nil,
+		Room:  roomID,
 	})
+
+	if reqBody.Room == nil {
+		if errCNR != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"statusText": "There was a problem creating the Room"})
+			return
+		} else {
+			go func(text string) {
+				resp, _ := client.CreateChatCompletion(
+					context.Background(),
+					openai.ChatCompletionRequest{
+						Model: openai.GPT3Dot5Turbo,
+						Messages: []openai.ChatCompletionMessage{
+							{
+								Role:    openai.ChatMessageRoleUser,
+								Content: "What title of less than 6 words would you give to the text in the language of the text? " + text,
+							},
+						},
+					},
+				)
+				fmt.Println(resp.Choices[0].Message.Content)
+				UpdateRoom(roomID, resp.Choices[0].Message.Content)
+			}(resp.Choices[0].Message.Content)
+		}
+	}
 }
 
 func CreateImage(c *gin.Context) {

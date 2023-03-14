@@ -4,6 +4,7 @@ import { ChatContext } from '../context/chatContext'
 import { auth } from '../firebase'
 import Thinking from './Thinking'
 import { MdSend } from 'react-icons/md'
+import Notification from './Notification';
 
 /**
  * A chat view component that displays a list of messages and a form for sending new messages.
@@ -15,9 +16,14 @@ const ChatView = () => {
   const [thinking, setThinking] = useState(false)
   const options = ['ChatGPT', 'DALL·E']
   const [selected, setSelected] = useState(options[0])
+  const [room, setRoom] = useState(null)
   const [messages, addMessage, , , setLimit] = useContext(ChatContext)
   const user = auth.currentUser.uid
   const picUrl = auth.currentUser.photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'
+  const colors = ['red', 'yellow', 'green', 'blue'];
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [notificationType, setNotificationType] = useState(colors[Math.floor(Math.random() * colors.length)]);
 
   /**
    * Scrolls the chat area to the bottom.
@@ -71,12 +77,14 @@ const ChatView = () => {
       },
       body: JSON.stringify({
         prompt: newMsg,
-        user: user
+        user: user,
+        room: room
       })
     })
 
     const data = await response.json()
     setLimit(data.limit)
+    setRoom(data.room)
 
     if (response.ok) {
       // The request was successful
@@ -85,7 +93,7 @@ const ChatView = () => {
       setThinking(false)
     } else {
       // The request failed
-      window.alert(`openAI is returning an error: ${response.status + response.statusText} please try again later`)
+      handleShowNotification(`openAI is returning an error: ${response.status + " " + response.statusText} please try again later`, 'red')
       console.log(`Request failed with status ${response.statusText}`)
       setThinking(false)
     }
@@ -110,6 +118,18 @@ const ChatView = () => {
     inputRef.current.style.height = `${inputRef.current.scrollHeight-minus}px`;
   }
 
+  const handleShowNotification = (message, type) => {
+    setShowNotification(true);
+    setNotificationMessage(message);
+    setNotificationType(type);
+
+    setTimeout(() => {
+      setShowNotification(false);
+      setNotificationMessage('');
+      setNotificationType('');
+    }, 3000);
+  };
+
   /**
    * Scrolls the chat area to the bottom when the messages array is updated.
    */
@@ -126,6 +146,11 @@ const ChatView = () => {
 
   return (
     <div className="chatview">
+      <div>
+      {showNotification && (
+        <Notification message={notificationMessage} type={notificationType} />
+      )}
+    </div>
       <main className='chatview__chatarea'>
 
         {messages.map((message, index) => (

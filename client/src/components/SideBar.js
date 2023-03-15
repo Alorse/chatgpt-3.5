@@ -67,7 +67,7 @@ const SideBar = () => {
       <div className="nav__bottom">
         <DarkMode open={open} />
         <div className="nav">
-          <a href='https://help.openai.com/en/collections/3742473-chatgpt' className="nav__item">
+          <a target="_blank" rel="noreferrer" href='https://help.openai.com/en/collections/3742473-chatgpt' className="nav__item">
             <div className="nav__icons">
               <MdOutlineQuestionAnswer />
             </div>

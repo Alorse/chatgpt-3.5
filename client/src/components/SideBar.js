@@ -4,7 +4,6 @@ import { MdClose,
   MdAdd,
   MdOutlineLogout,
   MdOutlineQuestionAnswer,
-  MdOutlineCoffee,
  } from 'react-icons/md'
 import { ChatContext } from '../context/chatContext'
 import bot from '../assets/bot.ico'
@@ -19,7 +18,7 @@ import { auth } from '../firebase'
  */
 const SideBar = () => {
   const [open, setOpen] = useState(true)
-  const [, , clearMessages, limit, setLimit] = useContext(ChatContext)
+  const [, , clearMessages] = useContext(ChatContext)
 
   function handleResize() {
     window.innerWidth <= 768 ? setOpen(false) : setOpen(true)
@@ -38,7 +37,6 @@ const SideBar = () => {
     if (auth.currentUser) {
       auth.signOut()
       clearChat()
-      setLimit(-1)
       window.sessionStorage.clear()
     }
   }
@@ -50,7 +48,7 @@ const SideBar = () => {
           <span className='w-8 h-8'><img src={bot} alt="" /></span>
         </div>
         <h1 className={`sidebar__app-title ${!open && "scale-0 hidden"}`}>
-          GPT3-Chatbot
+          GPT
         </h1>
         <div className='sidebar__btn-close' onClick={() => setOpen(!open)}>
           {open ? <MdClose className='sidebar__btn-icon' /> : <MdMenu className='sidebar__btn-icon' />}
@@ -58,32 +56,18 @@ const SideBar = () => {
         </div>
       </div>
       <div className="nav">
-        <span className='nav__item  bg-light-white' onClick={clearChat}>
+        <span className='nav__item bg-light-white' onClick={clearChat}>
           <div className='nav__icons'>
             <MdAdd />
           </div>
           <h1 className={`${!open && "hidden"}`}>New chat</h1>
         </span>
       </div>
-      {limit !== null && limit >= 0 &&
-        <div className={`nav__msg ${!open && "scale-0 hidden"}`}>
-          <p className='nav__p'>
-            You have {limit} requests left today.
-          </p>
-        </div>}
 
       <div className="nav__bottom">
         <DarkMode open={open} />
         <div className="nav">
-          <a href='https://www.buymeacoffee.com/eyuel' rel="noreferrer" target='_blank' className="nav__item">
-            <div className="nav__icons">
-              <MdOutlineCoffee />
-            </div>
-            <h1 className={`${!open && "hidden"}`}>Support this project</h1>
-          </a>
-        </div>
-        <div className="nav">
-          <a href='https://github.com/EyuCoder/chatgpt-clone' className="nav__item">
+          <a href='https://help.openai.com/en/collections/3742473-chatgpt' className="nav__item">
             <div className="nav__icons">
               <MdOutlineQuestionAnswer />
             </div>

@@ -10,6 +10,7 @@ module.exports = {
         "light-white": "#ffffff2b",
         "dark-grey": "#202123",
         "light-grey": "#353740",
+        "dark-slate-gray": "#2E4F4F",
       },
     },
   },

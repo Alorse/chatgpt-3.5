@@ -17,7 +17,7 @@ const ChatView = () => {
   const options = ['ChatGPT', 'DALL·E']
   const [selected, setSelected] = useState(options[0])
   const [room, setRoom] = useState(null)
-  const [messages, addMessage, , , setLimit] = useContext(ChatContext)
+  const [messages, addMessage, ] = useContext(ChatContext)
   const user = auth.currentUser.uid
   const picUrl = auth.currentUser.photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'
   const colors = ['red', 'yellow', 'green', 'blue'];
@@ -83,7 +83,6 @@ const ChatView = () => {
     })
 
     const data = await response.json()
-    setLimit(data.limit)
     setRoom(data.room)
 
     if (response.ok) {
@@ -178,7 +177,7 @@ const ChatView = () => {
           <button type="submit" className='chatview__btn-send' disabled={!formValue}><MdSend /></button>
         </div>
       </form>
-      <div className="text-center text-xs text-black/50 dark:text-white/50 px-4 md:pt-1 pb-3">
+      <div className="text-center text-xs text-black/50 dark:text-white/50 px-4 pb-3">
         Free Research Preview.
         This is a modified version
         by <a target="_blank" rel="noreferrer" href="https://github.com/alorse">Alorse</a> (GPT 3.5 turbo).

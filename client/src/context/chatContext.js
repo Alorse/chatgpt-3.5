@@ -16,10 +16,9 @@ const ChatContext = createContext({});
  */
 const ChatContextProvider = (props) => {
   const [messages, setMessages, clearMessages] = useMessageCollection([]);
-  const [limit, setLimit] = useState(-1);
 
   return (
-    <ChatContext.Provider value={[messages, setMessages, clearMessages, limit, setLimit]}>
+    <ChatContext.Provider value={[messages, setMessages, clearMessages]}>
       {props.children}
     </ChatContext.Provider>
   )

@@ -12,9 +12,8 @@ import (
 )
 
 type Response struct {
-	Bot   string `json:"bot"`
-	Limit *int   `json:"limit"`
-	Room  string `json:"room"`
+	Bot  string `json:"bot"`
+	Room string `json:"room"`
 }
 
 var reqBody models.ReqBody
@@ -54,9 +53,8 @@ func CreateChatCompletion(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, Response{
-		Bot:   resp.Choices[0].Message.Content,
-		Limit: nil,
-		Room:  roomID,
+		Bot:  resp.Choices[0].Message.Content,
+		Room: roomID,
 	})
 
 	if reqBody.Room == nil {
@@ -107,7 +105,6 @@ func CreateImage(c *gin.Context) {
 	url := resp.Data[0].URL
 
 	c.JSON(http.StatusOK, Response{
-		Bot:   url,
-		Limit: nil,
+		Bot: url,
 	})
 }

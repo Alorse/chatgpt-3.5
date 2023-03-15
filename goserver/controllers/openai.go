@@ -28,6 +28,11 @@ func CreateChatCompletion(c *gin.Context) {
 	}
 	roomID, errCNR := CreateNewRoom(reqBody)
 	cleanedPrompt := reqBody.Prompt
+	CreateNewMessage(models.ReqBody{
+		Prompt: cleanedPrompt,
+		User:   reqBody.User,
+		Room:   &roomID,
+	})
 
 	if cleanedPrompt == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"statusText": "Missing required field \"prompt\" in request body"})
@@ -51,7 +56,16 @@ func CreateChatCompletion(c *gin.Context) {
 		fmt.Printf("ChatCompletion error: %v\n", err)
 		return
 	}
-
+	_, errCNM := CreateNewMessage(models.ReqBody{
+		Prompt: resp.Choices[0].Message.Content,
+		User:   "0",
+		Room:   &roomID,
+	})
+	if errCNM != nil {
+		fmt.Println(errCNM)
+		c.JSON(http.StatusBadRequest, gin.H{"statusText": "There was a problem creating the Message"})
+		return
+	}
 	c.JSON(http.StatusOK, Response{
 		Bot:  resp.Choices[0].Message.Content,
 		Room: roomID,
@@ -75,7 +89,6 @@ func CreateChatCompletion(c *gin.Context) {
 						},
 					},
 				)
-				fmt.Println(resp.Choices[0].Message.Content)
 				UpdateRoom(roomID, resp.Choices[0].Message.Content)
 			}(resp.Choices[0].Message.Content)
 		}

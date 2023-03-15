@@ -9,20 +9,24 @@ import (
 )
 
 func CreateNewRoom(reqBody models.ReqBody) (string, error) {
-	sql := `INSERT INTO rooms(id, user_id, name) VALUES (?, ?, ?)`
-	args := []interface{}{}
-	roomID := generateRoomID()
-	args = append(args, roomID)
-	args = append(args, reqBody.User)
-	args = append(args, "Nameless")
+	if reqBody.Room == nil {
+		sql := `INSERT INTO rooms(id, user_id, name) VALUES (?, ?, ?)`
+		args := []interface{}{}
+		roomID := generateRoomID()
+		args = append(args, roomID)
+		args = append(args, reqBody.User)
+		args = append(args, "Nameless")
 
-	rows, err := DB.GetConnection().Query(sql, args...)
-	if err != nil {
-		return "", err
+		rows, err := DB.GetConnection().Query(sql, args...)
+		if err != nil {
+			return "", err
+		}
+		defer rows.Close()
+
+		return roomID, nil
+	} else {
+		return *reqBody.Room, nil
 	}
-	defer rows.Close()
-
-	return roomID, nil
 }
 
 func generateRoomID() string {

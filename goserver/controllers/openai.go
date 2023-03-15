@@ -45,6 +45,10 @@ func CreateChatCompletion(c *gin.Context) {
 			Model: openai.GPT3Dot5Turbo,
 			Messages: []openai.ChatCompletionMessage{
 				{
+					Role:    openai.ChatMessageRoleSystem,
+					Content: "You're an a AI assistant that replies to all my questions in markdown format.",
+				},
+				{
 					Role:    openai.ChatMessageRoleUser,
 					Content: cleanedPrompt + "?",
 				},

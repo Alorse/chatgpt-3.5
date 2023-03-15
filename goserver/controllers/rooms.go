@@ -57,3 +57,30 @@ func cleanTitle(str string) string {
 
 	return cleanStr
 }
+
+func ShowRoomsByUser(userID string) ([]models.Room, error) {
+	var rooms []models.Room
+	sql := `SELECT * FROM rooms WHERE user_id = ? LIMIT 100`
+	rows, err := DB.GetConnection().Query(sql, userID)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var room models.Room
+		err := rows.Scan(&room.ID, &room.UserID, &room.Name, &room.CreatedAt)
+		if err != nil {
+			log.Fatal(err)
+			return nil, err
+		}
+		rooms = append(rooms, room)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	return rooms, nil
+}

@@ -39,8 +39,14 @@ const SignIn = () => {
           Sign in with Google
         </button>
 
-        <p className='signin__tos'>Do not violate the community guidelines or you will be banned for life!</p>
       </div>
+      <p className='signin__tos'>
+        Do not violate the&nbsp;
+        <a target="_blank" rel="noreferrer" href="https://openai.com/policies/usage-policies" className='font-bold'>
+          community guideline
+        </a>
+        &nbsp;or you will be banned for life!
+      </p>
     </div>
   )
 }

@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"log"
+	"net/http"
 	"servergpt/models"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
@@ -58,9 +60,9 @@ func cleanTitle(str string) string {
 	return cleanStr
 }
 
-func ShowRoomsByUser(userID string) ([]models.Room, error) {
+func getRoomsByUser(userID string) ([]models.Room, error) {
 	var rooms []models.Room
-	sql := `SELECT * FROM rooms WHERE user_id = ? LIMIT 100`
+	sql := `SELECT id, name, created_at FROM rooms WHERE user_id = ? LIMIT 100`
 	rows, err := DB.GetConnection().Query(sql, userID)
 	if err != nil {
 		log.Fatal(err)
@@ -70,7 +72,7 @@ func ShowRoomsByUser(userID string) ([]models.Room, error) {
 
 	for rows.Next() {
 		var room models.Room
-		err := rows.Scan(&room.ID, &room.UserID, &room.Name, &room.CreatedAt)
+		err := rows.Scan(&room.ID, &room.Name, &room.CreatedAt)
 		if err != nil {
 			log.Fatal(err)
 			return nil, err
@@ -83,4 +85,15 @@ func ShowRoomsByUser(userID string) ([]models.Room, error) {
 		return nil, err
 	}
 	return rooms, nil
+}
+
+func ShowRoomsByUser(c *gin.Context) {
+	userID := c.DefaultQuery("id", "0")
+	var rooms []models.Room
+	rooms, err := getRoomsByUser(userID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error2": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, rooms)
 }

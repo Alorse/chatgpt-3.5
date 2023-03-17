@@ -25,5 +25,6 @@ func main() {
 	r.POST("/signin", controllers.SignIn)
 	r.POST("/davinci", controllers.CreateChatCompletion)
 	r.POST("/dalle", controllers.CreateImage)
+	r.GET("/get-rooms", controllers.ShowRoomsByUser)
 	r.Run()
 }

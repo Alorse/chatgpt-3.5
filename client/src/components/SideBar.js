@@ -5,6 +5,8 @@ import { MdClose,
   MdOutlineLogout,
   MdOutlineQuestionAnswer,
  } from 'react-icons/md'
+import { CiChat1 } from 'react-icons/ci'
+import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { ChatContext } from '../context/chatContext'
 import bot from '../assets/bot.ico'
 import DarkMode from './DarkMode'
@@ -16,9 +18,13 @@ import { auth } from '../firebase'
  * 
  * @param {Object} props - The properties for the component.
  */
-const SideBar = () => {
+const SideBar = ({user}) => {
   const [open, setOpen] = useState(true)
+  const [userData, setUserData] = useState(user)
   const [, , clearMessages] = useContext(ChatContext)
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
 
   function handleResize() {
     window.innerWidth <= 768 ? setOpen(false) : setOpen(true)
@@ -26,11 +32,12 @@ const SideBar = () => {
 
   useEffect(() => {
     window.addEventListener("resize", handleResize)
+    GetUserRooms()
 
     return () => {
       window.removeEventListener("resize", handleResize)
     }
-  }, [])
+  }, []);
 
   const clearChat = () => clearMessages()
   const SignOut = () => {
@@ -40,6 +47,62 @@ const SideBar = () => {
       window.sessionStorage.clear()
     }
   }
+
+  const GetUserRooms = async () => {
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
+    const params = new URLSearchParams({ id: userData.uid });
+    try {
+      const response = await fetch(`${BASE_URL}get-rooms?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+      const data = await response.json();
+      if (data) {
+        setUserData(prevState => ({...prevState, rooms: data}));
+      }
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderRooms = () => {
+    if (loading) {
+      return <AiOutlineLoading3Quarters />;
+    }
+
+    if (error) {
+      return <p>Oops, something went wrong!</p>;
+    }
+
+    if (!userData.rooms || userData.rooms.length === 0) {
+      return <p>No rooms available</p>;
+    }
+
+    return (
+      <div className='menu'>
+          {userData.rooms.map(room => 
+            <a key={room.ID} href={process.env.REACT_APP_BASE_URL + 'room/' + room.ID} title={room.Name}>
+              <div className="nav">
+                <span className="nav__item">
+                  <div className="nav__icons">
+                    <CiChat1 />
+                  </div>
+                  <div className='flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative'>
+                    {room.Name}
+                    <div class="absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l from-dark-slate-gray group-hover:from-[#2A2B32]"></div>
+                  </div>
+                </span>
+              </div>
+            </a>)
+          }
+      </div>
+    );
+  };
+
 
   return (
     <section className={` ${open ? "w-64" : "w-16"} sidebar`}>
@@ -63,6 +126,9 @@ const SideBar = () => {
           <h1 className={`${!open && "hidden"}`}>New chat</h1>
         </span>
       </div>
+      <div className="nav">
+        {renderRooms()}
+      </div>
 
       <div className="nav__bottom">
         <DarkMode open={open} />
@@ -83,7 +149,7 @@ const SideBar = () => {
           </span>
         </div>
       </div>
-    </section >
+    </section>
   )
 }
 

@@ -15,7 +15,7 @@
 
   /* SideBar */
   .sidebar {
-    @apply flex flex-col gap-y-4 h-screen bg-dark-slate-gray p-5 pt-8 relative duration-300;
+    @apply flex flex-col gap-y-4 h-screen bg-dark-slate-gray p-2 pt-8 relative duration-300;
   }
 
   .sidebar__app-bar {
@@ -45,6 +45,12 @@
 
   .nav__item {
     @apply p-4 flex h-12 items-center gap-x-4 w-screen rounded-md cursor-pointer hover:bg-light-white text-white text-base;
+  }
+  .menu {
+    @apply max-h-[35rem] flex-col flex-1 overflow-hidden overflow-y-auto border-b border-white/20;
+  }
+  .menu .nav__item {
+    @apply p-3 flex h-12 items-center w-screen rounded-md cursor-pointer hover:bg-light-white text-white text-base;
   }
 
   .nav__icons {
@@ -119,6 +125,10 @@
     @apply text-base text-slate-700 dark:text-slate-200;
   }
 
+  .message__markdown a {
+    @apply underline underline-offset-2;
+  }
+
   .message__createdAt {
     @apply text-sm font-thin italic text-slate-600 dark:text-slate-300;
   }
@@ -156,6 +166,12 @@
   pre div+div {
     @apply bg-black !important;
     margin-top:0px !important;
+  }
+  .chatview__chatarea ol, .chatview__chatarea ul{
+    @apply list-inside list-decimal pl-4 my-5 marker:text-gray-400;
+  }
+  .chatview__chatarea li{
+    @apply pl-1;
   }
 }
 

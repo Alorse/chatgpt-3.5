@@ -26,7 +26,7 @@ const App = () => {
         </div>
       ) : (
         <div>
-          {user ? <Home /> : <SignIn />}
+          {user ? <Home user={user} /> : <SignIn />}
         </div>
       )}
     </ChatContextProvider>

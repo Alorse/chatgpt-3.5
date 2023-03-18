@@ -1,10 +1,12 @@
-import React, { useState, useRef, useEffect, useContext } from 'react'
+import React, { useState, useRef, useEffect, useContext, useCallback } from 'react'
 import ChatMessage from './ChatMessage'
 import { ChatContext } from '../context/chatContext'
 import { auth } from '../firebase'
 import Thinking from './Thinking'
 import { MdSend } from 'react-icons/md'
 import Notification from './Notification';
+import { useLocation } from "react-router-dom";
+import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 
 /**
  * A chat view component that displays a list of messages and a form for sending new messages.
@@ -24,6 +26,11 @@ const ChatView = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState(colors[Math.floor(Math.random() * colors.length)]);
+  const [loading, setLoading] = useState(true);
+  const [isFirstRender, setIsFirstRender] = useState(true);
+  const [error, setError] = useState(null);
+  const location = useLocation();
+  const roomId = location.pathname.split("/room/")[1];
 
   /**
    * Scrolls the chat area to the bottom.
@@ -50,6 +57,40 @@ const ChatView = () => {
 
     addMessage(newMsg)
   }
+
+  const GetUserMessages = useCallback(async () => {
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
+    const params = new URLSearchParams({ id: roomId });
+    if (typeof roomId === 'undefined') {
+      return
+    }
+    setRoom(roomId)
+    try {
+      const response = await fetch(`${BASE_URL}get-messages?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+      const data = await response.json();
+      if (data) {
+        data.forEach(message => {
+          const newMsg = {
+            id: message.ID,
+            createdAt: new Date(message.CreatedAt),
+            text: message.MessageText,
+            ai: message.UserID === "1" ? true : false,
+            selected: `${selected}`
+          }
+          addMessage(newMsg)
+        });
+      }
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   /**
    * Sends our prompt to our API and get response to our request from openai.
@@ -141,7 +182,14 @@ const ChatView = () => {
    */
   useEffect(() => {
     inputRef.current.focus()
-  }, [])
+  })
+
+  useEffect(() => {
+    if(isFirstRender){
+      GetUserMessages();
+      setIsFirstRender(false);
+    }
+  }, [isFirstRender, GetUserMessages]);
 
   return (
     <div className="chatview">

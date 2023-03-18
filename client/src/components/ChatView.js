@@ -6,7 +6,6 @@ import Thinking from './Thinking'
 import { MdSend } from 'react-icons/md'
 import Notification from './Notification';
 import { useLocation } from "react-router-dom";
-import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 
 /**
  * A chat view component that displays a list of messages and a form for sending new messages.
@@ -26,9 +25,7 @@ const ChatView = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState(colors[Math.floor(Math.random() * colors.length)]);
-  const [loading, setLoading] = useState(true);
   const [isFirstRender, setIsFirstRender] = useState(true);
-  const [error, setError] = useState(null);
   const location = useLocation();
   const roomId = location.pathname.split("/room/")[1];
 
@@ -86,9 +83,10 @@ const ChatView = () => {
         });
       }
     } catch (error) {
-      setError(error);
+      console.log(error)
+      // setError(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   }, []);
 

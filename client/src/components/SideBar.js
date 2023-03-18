@@ -11,6 +11,7 @@ import { ChatContext } from '../context/chatContext'
 import bot from '../assets/bot.ico'
 import DarkMode from './DarkMode'
 import { auth } from '../firebase'
+import { useLocation } from "react-router-dom";
 
 /**
  * A sidebar component that displays a list of nav items and a toggle 
@@ -24,6 +25,8 @@ const SideBar = ({user}) => {
   const [, , clearMessages] = useContext(ChatContext)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation();
+  const roomId = location.pathname.split("/room/")[1];
 
 
   function handleResize() {
@@ -51,6 +54,7 @@ const SideBar = ({user}) => {
   const GetUserRooms = async () => {
     const BASE_URL = process.env.REACT_APP_BASE_URL;
     const params = new URLSearchParams({ id: userData.uid });
+    let data;
     try {
       const response = await fetch(`${BASE_URL}get-rooms?${params.toString()}`, {
         method: 'GET',
@@ -58,7 +62,7 @@ const SideBar = ({user}) => {
           'Content-Type': 'application/json'
         },
       });
-      const data = await response.json();
+      data = await response.json();
       if (data) {
         setUserData(prevState => ({...prevState, rooms: data}));
       }
@@ -66,7 +70,15 @@ const SideBar = ({user}) => {
       setError(error);
     } finally {
       setLoading(false);
+      if(roomId){
+        document.title = getItemNameById(data, roomId);
+      }
     }
+  };
+
+  const getItemNameById = (data, id) => {
+    const item = data.find((item) => item.ID === id);
+    return item ? item.Name : null;
   };
 
   const renderRooms = () => {
@@ -86,7 +98,7 @@ const SideBar = ({user}) => {
       <div className='menu'>
           {userData.rooms.map(room => 
             <a key={room.ID} href={process.env.PUBLIC_URL + '/room/' + room.ID} title={room.Name}>
-              <div className="nav">
+              <div className={`nav ${room.ID === roomId ? 'active' : ''}`}>
                 <span className="nav__item">
                   <div className="nav__icons">
                     <CiChat1 />

@@ -40,7 +40,11 @@
 
   /* SideBar Nav */
   .nav {
-    @apply flex justify-around;
+    @apply flex justify-around pt-1 pb-1;
+  }
+
+  .active .nav__item {
+    @apply rounded-md bg-light-white;
   }
 
   .nav__item {
@@ -50,14 +54,14 @@
     @apply max-h-[35rem] flex-col flex-1 overflow-hidden overflow-y-auto border-b border-white/20;
   }
   .menu .nav__item {
-    @apply p-2 pr-0 flex h-12 items-center gap-x-1.5 w-screen rounded-md cursor-pointer hover:bg-light-white text-white text-sm;
+    @apply p-2 pr-0 flex h-10 items-center gap-x-1.5 w-screen rounded-md cursor-pointer hover:bg-light-white text-white text-sm;
   }
 
   .menu .right-shadow{
     @apply absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l from-dark-slate-gray group-hover:from-[#2A2B32];
   }
 
-  .nav__item:hover .right-shadow {
+  .nav__item:hover .right-shadow, .active .right-shadow {
     @apply hidden;
   }
 
@@ -180,6 +184,9 @@
   }
   .chatview__chatarea li{
     @apply pl-1;
+  }
+  .chatview__chatarea li p{
+    @apply inline;
   }
 }
 

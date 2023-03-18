@@ -75,17 +75,17 @@ const SideBar = ({user}) => {
     }
 
     if (error) {
-      return <p>Oops, something went wrong!</p>;
+      return <p className='message__markdown'>Oops, something went wrong!</p>;
     }
 
     if (!userData.rooms || userData.rooms.length === 0) {
-      return <p>No rooms available</p>;
+      return <p className='message__markdown'>No rooms available</p>;
     }
 
     return (
       <div className='menu'>
           {userData.rooms.map(room => 
-            <a key={room.ID} href={process.env.REACT_APP_BASE_URL + 'room/' + room.ID} title={room.Name}>
+            <a key={room.ID} href={process.env.PUBLIC_URL + '/room/' + room.ID} title={room.Name}>
               <div className="nav">
                 <span className="nav__item">
                   <div className="nav__icons">
@@ -93,7 +93,7 @@ const SideBar = ({user}) => {
                   </div>
                   <div className='flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative'>
                     {room.Name}
-                    <div class="absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l from-dark-slate-gray group-hover:from-[#2A2B32]"></div>
+                    <div className="right-shadow"></div>
                   </div>
                 </span>
               </div>

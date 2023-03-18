@@ -50,7 +50,15 @@
     @apply max-h-[35rem] flex-col flex-1 overflow-hidden overflow-y-auto border-b border-white/20;
   }
   .menu .nav__item {
-    @apply p-3 flex h-12 items-center w-screen rounded-md cursor-pointer hover:bg-light-white text-white text-base;
+    @apply p-2 pr-0 flex h-12 items-center gap-x-1.5 w-screen rounded-md cursor-pointer hover:bg-light-white text-white text-sm;
+  }
+
+  .menu .right-shadow{
+    @apply absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l from-dark-slate-gray group-hover:from-[#2A2B32];
+  }
+
+  .nav__item:hover .right-shadow {
+    @apply hidden;
   }
 
   .nav__icons {

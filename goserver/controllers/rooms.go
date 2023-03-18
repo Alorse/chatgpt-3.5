@@ -62,7 +62,11 @@ func cleanTitle(str string) string {
 
 func getRoomsByUser(userID string) ([]models.Room, error) {
 	var rooms []models.Room
-	sql := `SELECT id, name, created_at FROM rooms WHERE user_id = ? LIMIT 100`
+	sql := `SELECT id, name, created_at 
+			FROM rooms 
+			WHERE user_id = ? 
+			ORDER BY created_at DESC 
+			LIMIT 100`
 	rows, err := DB.GetConnection().Query(sql, userID)
 	if err != nil {
 		log.Fatal(err)

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { MdClose,
   MdMenu,
   MdAdd,
@@ -7,7 +7,6 @@ import { MdClose,
  } from 'react-icons/md'
 import { CiChat1 } from 'react-icons/ci'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
-import { ChatContext } from '../context/chatContext'
 import bot from '../assets/bot.ico'
 import DarkMode from './DarkMode'
 import { auth } from '../firebase'
@@ -22,7 +21,6 @@ import { useLocation } from "react-router-dom";
 const SideBar = ({user}) => {
   const [open, setOpen] = useState(true)
   const [userData, setUserData] = useState(user)
-  const [, , clearMessages] = useContext(ChatContext)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
@@ -41,12 +39,14 @@ const SideBar = ({user}) => {
       window.removeEventListener("resize", handleResize)
     }
   }, []);
+  
+  const newChat = () => {
+    window.location.href = process.env.REACT_APP_PUBLIC_URL;
+  }
 
-  const clearChat = () => clearMessages()
   const SignOut = () => {
     if (auth.currentUser) {
       auth.signOut()
-      clearChat()
       window.sessionStorage.clear()
     }
   }
@@ -97,7 +97,7 @@ const SideBar = ({user}) => {
     return (
       <div className='menu'>
           {userData.rooms.map(room => 
-            <a key={room.ID} href={process.env.PUBLIC_URL + '/room/' + room.ID} title={room.Name}>
+            <a key={room.ID} href={process.env.REACT_APP_PUBLIC_URL + 'room/' + room.ID} title={room.Name}>
               <div className={`nav ${room.ID === roomId ? 'active' : ''}`}>
                 <span className="nav__item">
                   <div className="nav__icons">
@@ -131,7 +131,7 @@ const SideBar = ({user}) => {
         </div>
       </div>
       <div className="nav">
-        <span className='nav__item bg-light-white' onClick={clearChat}>
+        <span className='nav__item bg-light-white' onClick={newChat}>
           <div className='nav__icons'>
             <MdAdd />
           </div>

@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"servergpt/models"
@@ -28,31 +29,33 @@ func CreateChatCompletion(c *gin.Context) {
 	}
 	roomID, errCNR := CreateNewRoom(reqBody)
 	cleanedPrompt := reqBody.Prompt
+	if cleanedPrompt == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"statusText": "Missing required field \"prompt\" in request body"})
+		return
+	}
+
+	messages := getOldMessages(reqBody, []openai.ChatCompletionMessage{
+		{
+			Role:    openai.ChatMessageRoleSystem,
+			Content: "You're an a AI assistant that replies to all my questions in markdown format.",
+		},
+		{
+			Role:    openai.ChatMessageRoleUser,
+			Content: cleanedPrompt + "?",
+		},
+	})
+
 	CreateNewMessage(models.ReqBody{
 		Prompt: cleanedPrompt,
 		User:   reqBody.User,
 		Room:   &roomID,
 	})
 
-	if cleanedPrompt == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"statusText": "Missing required field \"prompt\" in request body"})
-		return
-	}
-
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT3Dot5Turbo,
-			Messages: []openai.ChatCompletionMessage{
-				{
-					Role:    openai.ChatMessageRoleSystem,
-					Content: "You're an a AI assistant that replies to all my questions in markdown format.",
-				},
-				{
-					Role:    openai.ChatMessageRoleUser,
-					Content: cleanedPrompt + "?",
-				},
-			},
+			Model:    openai.GPT3Dot5Turbo,
+			Messages: messages,
 		},
 	)
 
@@ -80,21 +83,7 @@ func CreateChatCompletion(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"statusText": "There was a problem creating the Room"})
 			return
 		} else {
-			go func(text string) {
-				resp, _ := client.CreateChatCompletion(
-					context.Background(),
-					openai.ChatCompletionRequest{
-						Model: openai.GPT3Dot5Turbo,
-						Messages: []openai.ChatCompletionMessage{
-							{
-								Role:    openai.ChatMessageRoleUser,
-								Content: "What title of less than 6 words would you give to the text in the language of the text? " + text,
-							},
-						},
-					},
-				)
-				UpdateRoom(roomID, resp.Choices[0].Message.Content)
-			}(resp.Choices[0].Message.Content)
+			go createRoomTitle(resp.Choices[0].Message.Content, roomID)
 		}
 	}
 }
@@ -124,4 +113,50 @@ func CreateImage(c *gin.Context) {
 	c.JSON(http.StatusOK, Response{
 		Bot: url,
 	})
+}
+
+func createRoomTitle(text string, roomID string) {
+	resp, _ := client.CreateChatCompletion(
+		context.Background(),
+		openai.ChatCompletionRequest{
+			Model: openai.GPT3Dot5Turbo,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: "What title of less than 4 words would you give to the text in the language of the text? " + text,
+				},
+			},
+		},
+	)
+	UpdateRoom(roomID, resp.Choices[0].Message.Content)
+}
+
+func getOldMessages(reqBody models.ReqBody, messages []openai.ChatCompletionMessage) []openai.ChatCompletionMessage {
+	if reqBody.Room != nil {
+		var oldMessages []models.Message
+		var completeMessages []openai.ChatCompletionMessage
+		oldMessages, err := GetMessagesByRoom(*reqBody.Room, 6, `DESC`)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		completeMessages = append(completeMessages, messages[0])
+		// Recorrer oldMessages en orden inverso y agregar los mensajes a completeMessages
+		for i := len(oldMessages) - 1; i >= 0; i-- {
+			role := openai.ChatMessageRoleAssistant
+			if oldMessages[i].UserID == "0" {
+				role = openai.ChatMessageRoleUser
+			}
+			message := openai.ChatCompletionMessage{
+				Role:    role,
+				Content: oldMessages[i].MessageText,
+			}
+			completeMessages = append(completeMessages, message)
+		}
+		completeMessages = append(completeMessages, messages[1])
+
+		return completeMessages
+	} else {
+		return messages
+	}
 }

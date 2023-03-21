@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"servergpt/models"
@@ -32,14 +33,15 @@ func generateMessageID() string {
 	return id.String()
 }
 
-func getMessagesByRoom(roomID string) ([]models.Message, error) {
+func GetMessagesByRoom(roomID string, limit int64, order_by string) ([]models.Message, error) {
 	var messages []models.Message
 	sql := `SELECT id, IF(user_id = '0', 1, 0) AS user_id, message_text, created_at 
 			FROM messages 
 			WHERE room_id = ? 
-			ORDER BY created_at ASC 
-			LIMIT 100`
-	rows, err := DB.GetConnection().Query(sql, roomID)
+			ORDER BY created_at %s 
+			LIMIT ?`
+	sql = fmt.Sprintf(sql, order_by)
+	rows, err := DB.GetConnection().Query(sql, roomID, limit)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -60,13 +62,14 @@ func getMessagesByRoom(roomID string) ([]models.Message, error) {
 		log.Fatal(err)
 		return nil, err
 	}
+
 	return messages, nil
 }
 
 func ShowMessagesByRoom(c *gin.Context) {
-	messageID := c.DefaultQuery("id", "0")
+	roomID := c.DefaultQuery("id", "0")
 	var messages []models.Message
-	messages, err := getMessagesByRoom(messageID)
+	messages, err := GetMessagesByRoom(roomID, 100, "ASC")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error2": err.Error()})
 		return

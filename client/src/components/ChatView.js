@@ -13,7 +13,7 @@ import { useLocation } from "react-router-dom";
 const ChatView = () => {
   const messagesEndRef = useRef()
   const inputRef = useRef()
-  const [formValue, setFormValue] = useState('')
+  const fValueRef = useRef('')
   const [thinking, setThinking] = useState(false)
   const options = ['ChatGPT', 'DALL·E']
   const [selected, setSelected] = useState(options[0])
@@ -28,6 +28,8 @@ const ChatView = () => {
   const [isFirstRender, setIsFirstRender] = useState(true);
   const location = useLocation();
   const roomId = location.pathname.split("/room/")[1];
+  const textarea = document.querySelector('.chatview__textarea-message');
+  const sendButton = document.querySelector('.chatview__btn-send');
 
   /**
    * Scrolls the chat area to the bottom.
@@ -98,7 +100,10 @@ const ChatView = () => {
   const sendMessage = async (e) => {
     e.preventDefault()
 
-    const newMsg = formValue
+    const newMsg = fValueRef.current
+    if(newMsg.trim().length === 0){
+      return
+    }
     const aiModel = selected
 
     const BASE_URL = process.env.REACT_APP_BASE_URL
@@ -106,7 +111,8 @@ const ChatView = () => {
     const POST_URL = BASE_URL + PATH
 
     setThinking(true)
-    setFormValue('')
+    textarea.value = '';
+    sendButton.setAttribute('disabled', true);
     updateMessage(newMsg, false, aiModel)
 
     const response = await fetch(POST_URL, {
@@ -135,12 +141,16 @@ const ChatView = () => {
       console.log(`Request failed with status ${response.statusText}`)
       setThinking(false)
     }
-
     setThinking(false)
   }
 
   const handleChange = e => {
-    setFormValue(e.target.value)
+    fValueRef.current = e.target.value
+    if (textarea.value.trim().length) {
+      sendButton.removeAttribute('disabled');
+    } else {
+      sendButton.setAttribute('disabled', true);
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -151,7 +161,7 @@ const ChatView = () => {
   }
 
   const handleKeyUp = (e) => {
-    let minus = formValue.includes("\n") || formValue.length > 86 ? 0 : 24;
+    let minus = e.target.value.includes("\n") || e.target.value.length > 86 ? 0 : 24;
     inputRef.current.style.height = "auto";
     inputRef.current.style.height = `${inputRef.current.scrollHeight-minus}px`;
   }
@@ -207,7 +217,7 @@ const ChatView = () => {
         <span ref={messagesEndRef}></span>
       </main>
       <form className='form' onSubmit={sendMessage}>
-        <select value={selected} onChange={(e) => setSelected(e.target.value)} className="dropdown" >
+        <select value={selected} onChange={(e) => setSelected(e.target.value)} className="dropdown">
           <option>{options[0]}</option>
           <option>{options[1]}</option>
         </select>
@@ -215,12 +225,11 @@ const ChatView = () => {
           <textarea
             ref={inputRef}
             className='chatview__textarea-message'
-            value={formValue}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
             onKeyUp={handleKeyUp}
           />
-          <button type="submit" className='chatview__btn-send' disabled={!formValue}><MdSend /></button>
+          <button type="submit" className='chatview__btn-send' disabled><MdSend /></button>
         </div>
       </form>
       <div className="text-center text-xs text-black/50 dark:text-white/50 px-4 pb-3">

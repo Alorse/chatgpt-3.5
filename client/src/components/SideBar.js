@@ -32,6 +32,7 @@ const SideBar = ({user}) => {
   }
 
   useEffect(() => {
+    handleResize()
     window.addEventListener("resize", handleResize)
     GetUserRooms()
 
@@ -138,7 +139,7 @@ const SideBar = ({user}) => {
           <h1 className={`${!open && "hidden"}`}>New chat</h1>
         </span>
       </div>
-      <div className="nav">
+      <div className={`${!open && "hidden"} nav`}>
         {renderRooms()}
       </div>
 

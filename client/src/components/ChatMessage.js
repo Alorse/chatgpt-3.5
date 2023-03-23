@@ -17,11 +17,12 @@ const ChatMessage = (props) => {
   return (
     <div key={id} className={`${ai && 'flex-row-reverse'} message`}>
       <div className={`${ai && 'flex-row-reverse'} message-w`}>
+      <div className='message__wrapper'>
         {
           selected === 'DALL·E' && ai ?
-            <Image url={text} />
+              <Image url={text} />
             :
-            <div className='message__wrapper'>
+            <>
               {
                 ai ? 
                   <ReactMarkdown className={`message__markdown text-left`}
@@ -40,10 +41,10 @@ const ChatMessage = (props) => {
                     ))}
                   </div>
               }
-              <div className={`${ai ? 'text-left' : 'text-right'} message__createdAt`}>{moment(createdAt).calendar()}</div>
-            </div>
+            </>
         }
-
+        <div className={`${ai ? 'text-left' : 'text-right'} message__createdAt`}>{moment(createdAt).calendar()}</div>
+        </div>
 
         <div className="message__pic">
           {

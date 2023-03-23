@@ -126,7 +126,7 @@
   }
 
   .message-w {
-    @apply xl:w-9/12 w-full mx-auto flex justify-between px-2 py-5;
+    @apply xl:w-9/12 w-full mx-auto flex justify-between px-3 py-5;
   }
 
   .message__wrapper {
@@ -143,6 +143,10 @@
 
   .message__createdAt {
     @apply text-sm font-thin italic text-slate-600 dark:text-slate-300;
+  }
+
+  .flex-row-reverse .message__pic {
+    @apply hidden md:flex;
   }
 
   .message__pic {
@@ -173,6 +177,11 @@
 
   .flex-row-reverse {
     @apply bg-gray-100 dark:bg-[#444654];
+    background-image: radial-gradient(circle farthest-corner at center, rgb(53 55 64) 0%, #1C262B 100%);
+  }
+
+  .message .flex-row-reverse {
+    @apply bg-transparent bg-none !important;
   }
 
   pre div+div {
@@ -187,6 +196,71 @@
   }
   .chatview__chatarea li p{
     @apply inline;
+  }
+
+  .notification_error {
+    @apply bg-red-500/20 border border-red-500 text-red-500 px-4 py-3 rounded absolute bottom-24 left-1/2 -translate-x-2/4;
+  }
+}
+
+.loader_cointainer{
+  @apply relative h-16 mx-auto;
+}
+.loader {
+  @apply absolute w-16 h-16 rounded-full;
+  top: calc(50% - 32px);
+  left: calc(50% - 32px);
+}
+
+.inner {
+  @apply absolute box-border w-full h-full rounded-full;
+}
+
+.inner.one {
+  left: 0%;
+  top: 0%;
+  animation: rotate-one 1s linear infinite;
+  border-bottom: 3px solid #EFEFFA;
+}
+
+.inner.two {
+  right: 0%;
+  top: 0%;
+  animation: rotate-two 1s linear infinite;
+  border-right: 3px solid #EFEFFA;
+}
+
+.inner.three {
+  right: 0%;
+  bottom: 0%;
+  animation: rotate-three 1s linear infinite;
+  border-top: 3px solid #EFEFFA;
+}
+
+@keyframes rotate-one {
+  0% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+  }
+}
+
+@keyframes rotate-two {
+  0% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+  }
+}
+
+@keyframes rotate-three {
+  0% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
   }
 }
 

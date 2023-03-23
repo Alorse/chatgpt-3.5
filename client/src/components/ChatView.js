@@ -21,11 +21,7 @@ const ChatView = () => {
   const [messages, addMessage, ] = useContext(ChatContext)
   const user = auth.currentUser.uid
   const picUrl = auth.currentUser.photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'
-  const colors = ['red', 'yellow', 'green', 'blue'];
-  const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState('');
-  const [notificationType, setNotificationType] = useState(colors[Math.floor(Math.random() * colors.length)]);
-  const [isFirstRender, setIsFirstRender] = useState(true);
+  const [notification, setNotification] = useState({show: false, message: ''});
   const location = useLocation();
   const roomId = location.pathname.split("/room/")[1];
   const textarea = document.querySelector('.chatview__textarea-message');
@@ -35,7 +31,9 @@ const ChatView = () => {
    * Scrolls the chat area to the bottom.
    */
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }, 300) // When it's dall-e it needs more time to render 
   }
 
   /**
@@ -85,10 +83,8 @@ const ChatView = () => {
         });
       }
     } catch (error) {
+      handleShowNotification(`There is a problem, try later.`)
       console.log(error)
-      // setError(error);
-    } finally {
-      // setLoading(false);
     }
   }, []);
 
@@ -115,31 +111,35 @@ const ChatView = () => {
     sendButton.setAttribute('disabled', true);
     updateMessage(newMsg, false, aiModel)
 
-    const response = await fetch(POST_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        prompt: newMsg,
-        user: user,
-        room: room
+    try {
+      const response = await fetch(POST_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: newMsg,
+          user: user,
+          room: room
+        })
       })
-    })
 
-    const data = await response.json()
-    setRoom(data.room)
+      const data = await response.json()
+      setRoom(data.room)
 
-    if (response.ok) {
-      // The request was successful
-      data.bot && updateMessage(data.bot, true, aiModel)
-    } else if (response.status === 429) {
-      setThinking(false)
-    } else {
-      // The request failed
-      handleShowNotification(`openAI is returning an error: ${response.status + " " + response.statusText} please try again later`, 'red')
-      console.log(`Request failed with status ${response.statusText}`)
-      setThinking(false)
+      if (response.ok) {
+        data.bot && updateMessage(data.bot, true, aiModel)
+        setNotification({show: false});
+      } else if (response.status === 429) {
+        setThinking(false)
+      } else {
+        handleShowNotification(`openAI is returning an error: ${response.status + " " + response.statusText} please try again later`)
+        console.log(`Request failed with status ${response.statusText}`)
+        setThinking(false)
+      }
+    } catch (error) {
+      handleShowNotification(`There is a problem, try later.`)
+      console.log(error)
     }
     setThinking(false)
   }
@@ -166,16 +166,11 @@ const ChatView = () => {
     inputRef.current.style.height = `${inputRef.current.scrollHeight-minus}px`;
   }
 
-  const handleShowNotification = (message, type) => {
-    setShowNotification(true);
-    setNotificationMessage(message);
-    setNotificationType(type);
-
-    setTimeout(() => {
-      setShowNotification(false);
-      setNotificationMessage('');
-      setNotificationType('');
-    }, 3000);
+  const handleShowNotification = (message) => {
+    setNotification({
+      show: true,
+      message: message,
+    });
   };
 
   /**
@@ -193,19 +188,16 @@ const ChatView = () => {
   })
 
   useEffect(() => {
-    if(isFirstRender){
-      GetUserMessages();
-      setIsFirstRender(false);
-    }
-  }, [isFirstRender, GetUserMessages]);
+    GetUserMessages();
+  }, [GetUserMessages]);
 
   return (
     <div className="chatview">
       <div>
-      {showNotification && (
-        <Notification message={notificationMessage} type={notificationType} />
-      )}
-    </div>
+        {notification.show && (
+          <Notification message={notification.message} type={notification.type} />
+        )}
+      </div>
       <main className='chatview__chatarea'>
 
         {messages.map((message, index) => (

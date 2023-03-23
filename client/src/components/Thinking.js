@@ -8,9 +8,11 @@ const Thinking = () => {
         <div className="message__pic">
           <AiOutlineRobot />
         </div>
-        <div className='text-left message__createdAt'>
-          <div className="message__thinking">
-            Thinking...
+        <div className='loader_cointainer'>
+          <div className="loader">
+            <div className="inner one"></div>
+            <div className="inner two"></div>
+            <div className="inner three"></div>
           </div>
         </div>
       </div>

@@ -20,7 +20,12 @@ const ChatMessage = (props) => {
       <div className='message__wrapper'>
         {
           selected === 'DALL·E' && ai ?
-              <Image url={text} />
+            <>
+              <div className='message__createdAt text-left'>
+                (Requests to DALL·E are not stored as they are quickly removed from the server)
+              </div>
+                <Image url={text} />
+            </>
             :
             <>
               {

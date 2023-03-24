@@ -18,14 +18,12 @@ const ChatView = () => {
   const options = ['ChatGPT', 'DALL·E']
   const [selected, setSelected] = useState(options[0])
   const [room, setRoom] = useState(null)
-  const [messages, addMessage, ] = useContext(ChatContext)
+  const [messages, setMessages, ] = useContext(ChatContext)
   const user = auth.currentUser.uid
   const picUrl = auth.currentUser.photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'
   const [notification, setNotification] = useState({show: false, message: ''});
   const location = useLocation();
   const roomId = location.pathname.split("/room/")[1];
-  const textarea = document.querySelector('.chatview__textarea-message');
-  const sendButton = document.querySelector('.chatview__btn-send');
 
   /**
    * Scrolls the chat area to the bottom.
@@ -52,7 +50,7 @@ const ChatView = () => {
       selected: `${selected}`
     }
 
-    addMessage(newMsg)
+    setMessages(newMsg)
   }
 
   const GetUserMessages = useCallback(async () => {
@@ -79,11 +77,11 @@ const ChatView = () => {
             ai: message.UserID === "1" ? true : false,
             selected: `${selected}`
           }
-          addMessage(newMsg)
+          setMessages(newMsg)
         });
       }
     } catch (error) {
-      handleShowNotification(`There is a problem, try later.`)
+      handleShowNotification(`The server is not responding, try again later.`)
       console.log(error)
     }
   }, []);
@@ -107,8 +105,8 @@ const ChatView = () => {
     const POST_URL = BASE_URL + PATH
 
     setThinking(true)
-    textarea.value = '';
-    sendButton.setAttribute('disabled', true);
+    document.querySelector('.chatview__textarea-message').value = '';
+    document.querySelector('.chatview__btn-send').setAttribute('disabled', true);
     updateMessage(newMsg, false, aiModel)
 
     try {
@@ -138,7 +136,7 @@ const ChatView = () => {
         setThinking(false)
       }
     } catch (error) {
-      handleShowNotification(`There is a problem, try later.`)
+      handleShowNotification(`The server is not responding, try again later.`)
       console.log(error)
     }
     setThinking(false)
@@ -146,10 +144,10 @@ const ChatView = () => {
 
   const handleChange = e => {
     fValueRef.current = e.target.value
-    if (textarea.value.trim().length) {
-      sendButton.removeAttribute('disabled');
+    if (fValueRef.current.trim().length) {
+      document.querySelector('.chatview__btn-send').removeAttribute('disabled');
     } else {
-      sendButton.setAttribute('disabled', true);
+      document.querySelector('.chatview__btn-send').setAttribute('disabled', true);
     }
   };
 

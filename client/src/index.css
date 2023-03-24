@@ -176,7 +176,9 @@
   }
 
   .flex-row-reverse {
-    @apply bg-gray-100 dark:bg-[#444654];
+    @apply bg-gray-100;
+  }
+  .dark .flex-row-reverse {
     background-image: radial-gradient(circle farthest-corner at center, rgb(53 55 64) 0%, #1C262B 100%);
   }
 
@@ -199,7 +201,7 @@
   }
 
   .notification_error {
-    @apply bg-red-500/20 border border-red-500 text-red-500 px-4 py-3 rounded absolute bottom-24 left-1/2 -translate-x-2/4;
+    @apply fixed z-10 top-4 right-4 bg-[#fad2e1] text-[#7c193d] border border-red-500 px-4 py-3 rounded;
   }
 }
 

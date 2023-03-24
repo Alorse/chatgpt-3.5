@@ -11,6 +11,7 @@ import bot from '../assets/bot.ico'
 import DarkMode from './DarkMode'
 import { auth } from '../firebase'
 import { useLocation } from "react-router-dom";
+import Notification from './Notification';
 
 /**
  * A sidebar component that displays a list of nav items and a toggle 
@@ -25,7 +26,7 @@ const SideBar = ({user}) => {
   const [error, setError] = useState(null);
   const location = useLocation();
   const roomId = location.pathname.split("/room/")[1];
-
+  const [notification, setNotification] = useState({show: false, message: ''});
 
   function handleResize() {
     window.innerWidth <= 768 ? setOpen(false) : setOpen(true)
@@ -52,6 +53,13 @@ const SideBar = ({user}) => {
     }
   }
 
+  const handleShowNotification = (message) => {
+    setNotification({
+      show: true,
+      message: message,
+    });
+  }
+
   const GetUserRooms = async () => {
     const BASE_URL = process.env.REACT_APP_BASE_URL;
     const params = new URLSearchParams({ id: userData.uid });
@@ -68,6 +76,7 @@ const SideBar = ({user}) => {
         setUserData(prevState => ({...prevState, rooms: data}));
       }
     } catch (error) {
+      handleShowNotification(`The server is not responding, try again later.`)
       setError(error);
     } finally {
       setLoading(false);
@@ -161,6 +170,11 @@ const SideBar = ({user}) => {
             <h1 className={`${!open && "hidden"}`}>Log out</h1>
           </span>
         </div>
+      </div>
+      <div>
+        {notification.show && (
+          <Notification message={notification.message} />
+        )}
       </div>
     </section>
   )

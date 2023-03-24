@@ -81,7 +81,6 @@ const ChatView = () => {
         });
       }
     } catch (error) {
-      handleShowNotification(`The server is not responding, try again later.`)
       console.log(error)
     }
   }, []);
@@ -136,7 +135,6 @@ const ChatView = () => {
         setThinking(false)
       }
     } catch (error) {
-      handleShowNotification(`The server is not responding, try again later.`)
       console.log(error)
     }
     setThinking(false)
@@ -193,7 +191,7 @@ const ChatView = () => {
     <div className="chatview">
       <div>
         {notification.show && (
-          <Notification message={notification.message} type={notification.type} />
+          <Notification message={notification.message} />
         )}
       </div>
       <main className='chatview__chatarea'>

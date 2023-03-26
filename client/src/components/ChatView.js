@@ -135,6 +135,7 @@ const ChatView = () => {
         setThinking(false)
       }
     } catch (error) {
+      handleShowNotification(`The server is not responding, try again later.`)
       console.log(error)
     }
     setThinking(false)

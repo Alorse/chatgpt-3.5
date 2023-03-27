@@ -127,7 +127,7 @@ const SideBar = ({user}) => {
 
 
   return (
-    <section className={` ${open ? "w-64" : "w-16"} sidebar`}>
+    <section className={`sidebar ${open ? "w-64" : "w-16"}`}>
       <div className="sidebar__app-bar">
         <div className={`sidebar__app-logo ${!open && "scale-0 hidden"} `}>
           <span className='w-8 h-8'><img src={bot} alt="" /></span>
@@ -148,7 +148,7 @@ const SideBar = ({user}) => {
           <h1 className={`${!open && "hidden"}`}>New chat</h1>
         </span>
       </div>
-      <div className={`${!open && "hidden"} nav`}>
+      <div className={`${!open && "hidden"} rooms`}>
         {renderRooms()}
       </div>
 

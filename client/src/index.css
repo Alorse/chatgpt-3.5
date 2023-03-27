@@ -11,11 +11,25 @@
   padding:0;
 }
 
+
 @layer components {
+  html, body, #root, #root>div {
+    @apply h-full;
+  }
+  body{
+    @apply bg-slate-200;
+  }
+  body.dark{
+    @apply bg-light-grey;
+  }
 
   /* SideBar */
   .sidebar {
-    @apply flex flex-col gap-y-4 h-screen bg-dark-slate-gray p-2 pt-8 relative duration-300;
+    @apply fixed inset-y-0 md:flex md:flex-col gap-y-4 bg-dark-slate-gray p-2 pt-8 duration-300 z-10;
+  }
+
+  .rooms{
+    @apply flex-col overflow-y-auto border-b border-white/20 -mr-2;
   }
 
   .sidebar__app-bar {
@@ -51,7 +65,7 @@
     @apply p-4 flex h-12 items-center gap-x-4 w-screen rounded-md cursor-pointer hover:bg-light-white text-white text-base;
   }
   .menu {
-    @apply max-h-[35rem] flex-col flex-1 overflow-hidden overflow-y-auto border-b border-white/20;
+    @apply flex-col flex-1 overflow-hidden overflow-y-auto border-b border-white/20 mr-2;
   }
   .menu .nav__item {
     @apply p-2 pr-0 flex h-10 items-center gap-x-1.5 w-screen rounded-md cursor-pointer hover:bg-light-white text-white text-sm;
@@ -70,7 +84,7 @@
   }
 
   .nav__bottom {
-    @apply flex flex-col justify-end h-screen;
+    @apply flex flex-col justify-end h-44;
   }
 
   .nav__msg {
@@ -84,11 +98,15 @@
 
   /* CHATVIEW */
   .chatview {
-    @apply flex flex-col h-screen duration-300 overflow-hidden relative bg-slate-200 dark:bg-light-grey;
+    @apply flex h-full flex-1 flex-col md:pl-[256px] duration-300 overflow-hidden;
+  }
+
+  .sidebar.w-16 + .chatview{
+    @apply md:pl-8;
   }
 
   .chatview__chatarea {
-    @apply m-0 flex-grow w-full overflow-y-scroll flex flex-col shadow-md;
+    @apply m-0 flex-grow w-full flex flex-col shadow-md pl-16 md:pl-0 overflow-y-auto;
   }
 
   .form {

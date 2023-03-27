@@ -4,6 +4,7 @@ import { ChatContext } from '../context/chatContext'
 import { auth } from '../firebase'
 import Thinking from './Thinking'
 import { MdSend } from 'react-icons/md'
+import { BsArrowDownCircle } from 'react-icons/bs'
 import Notification from './Notification';
 import { useLocation } from "react-router-dom";
 
@@ -28,11 +29,11 @@ const ChatView = () => {
   /**
    * Scrolls the chat area to the bottom.
    */
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-    }, 300) // When it's dall-e it needs more time to render 
-  }
+    }, selected === options[0] ? 0 : 500) // When it's dall-e it needs more time to render
+  }, [])
 
   /**
    * Adds a new message to the chat.
@@ -175,7 +176,8 @@ const ChatView = () => {
    */
   useEffect(() => {
     scrollToBottom()
-  }, [messages, thinking])
+    console.log(messagesEndRef.current)
+  }, [messages, thinking, scrollToBottom])
 
   /**
    * Focuses the TextArea input to when the component is first rendered.
@@ -204,6 +206,9 @@ const ChatView = () => {
         {thinking && <Thinking />}
 
         <span ref={messagesEndRef}></span>
+        <div onClick={scrollToBottom} className='go_down'>
+          <BsArrowDownCircle />
+        </div>
       </main>
       <form className='form' onSubmit={sendMessage}>
         <select value={selected} onChange={(e) => setSelected(e.target.value)} className="dropdown">
@@ -221,7 +226,7 @@ const ChatView = () => {
           <button type="submit" className='chatview__btn-send' disabled><MdSend /></button>
         </div>
       </form>
-      <div className="text-center text-xs text-black/50 dark:text-white/50 px-4 pb-3">
+      <div className="copyright">
         Free Research Preview.
         This is a modified version
         by <a target="_blank" rel="noreferrer" href="https://github.com/alorse">Alorse</a> (GPT 3.5 turbo).

@@ -35,11 +35,14 @@ func generateMessageID() string {
 
 func GetMessagesByRoom(roomID string, limit int64, order_by string) ([]models.Message, error) {
 	var messages []models.Message
-	sql := `SELECT id, IF(user_id = '0', 1, 0) AS user_id, message_text, created_at 
-			FROM messages 
-			WHERE room_id = ? 
-			ORDER BY created_at %s 
-			LIMIT ?`
+	sql := `SELECT * FROM (
+				SELECT id, IF(user_id = '0', 1, 0) AS user_id, message_text, created_at 
+				FROM messages 
+				WHERE room_id = ? 
+				ORDER BY created_at DESC 
+				LIMIT ?
+			) as subquery 
+			ORDER BY created_at %s;`
 	sql = fmt.Sprintf(sql, order_by)
 	rows, err := DB.GetConnection().Query(sql, roomID, limit)
 	if err != nil {

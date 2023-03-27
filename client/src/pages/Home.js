@@ -6,10 +6,10 @@ import { BrowserRouter as Router } from 'react-router-dom';
 const Home = ({user}) => {
   return (
     <Router>
-    <div className="flex transition duration-500 ease-in-out">
-      <SideBar user={user} />
-      <ChatView />
-    </div>
+      <div className="overflow-hidden w-full h-full relative">
+        <SideBar user={user} />
+        <ChatView />
+      </div>
     </Router>
   )
 }

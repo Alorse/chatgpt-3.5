@@ -227,6 +227,7 @@ const ChatView = () => {
             onKeyUp={handleKeyUp}
           />
           <button type="submit" className='chatview__btn-send' disabled><MdSend /></button>
+          <div className='use__dalle'>To generate images with DALL·E AI system use: <pre className='italic inline'>/dalle &#123;prompt&#125;</pre></div>
         </div>
       </form>
       <div className="copyright">

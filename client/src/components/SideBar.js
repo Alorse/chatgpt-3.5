@@ -7,7 +7,7 @@ import { MdClose,
  } from 'react-icons/md'
 import { CiChat1 } from 'react-icons/ci'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
-import bot from '../assets/bot.ico'
+import bot from '../assets/logo.ico'
 import DarkMode from './DarkMode'
 import { auth } from '../firebase'
 import { useLocation } from "react-router-dom";
@@ -129,15 +129,11 @@ const SideBar = ({user}) => {
   return (
     <section className={`sidebar ${open ? "w-64" : "w-16"}`}>
       <div className="sidebar__app-bar">
-        <div className={`sidebar__app-logo ${!open && "scale-0 hidden"} `}>
-          <span className='w-8 h-8'><img src={bot} alt="" /></span>
+        <div className={`sidebar__app-logo ${!open && "scale-0 hidden"}`} onClick={() => setOpen(!open)}>
+          <span><img className='w-16 h-16' src={bot} alt="GPT" /></span>
         </div>
-        <h1 className={`sidebar__app-title ${!open && "scale-0 hidden"}`}>
-          GPT
-        </h1>
-        <div className='sidebar__btn-close' onClick={() => setOpen(!open)}>
-          {open ? <MdClose className='sidebar__btn-icon' /> : <MdMenu className='sidebar__btn-icon' />}
-
+        <div className={`sidebar__btn-close ${open && " hidden"}`} onClick={() => setOpen(!open)}>
+          <MdMenu className='sidebar__btn-icon' />
         </div>
       </div>
       <div className="nav">

@@ -176,7 +176,6 @@ const ChatView = () => {
    */
   useEffect(() => {
     scrollToBottom()
-    console.log(messagesEndRef.current)
   }, [messages, thinking, scrollToBottom])
 
   /**

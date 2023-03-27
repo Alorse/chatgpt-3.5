@@ -114,11 +114,11 @@
   }
 
   .copyright{
-    @apply text-center text-xs text-black/50 dark:text-white/50 px-4 pb-3 pl-16 pr-1 md:pl-0;
+    @apply text-center text-xs text-black/60 dark:text-white/60 px-4 pb-3 pl-16 pr-1 md:pl-0;
   }
 
-  .dropdown {
-    @apply dark:bg-light-grey h-10 px-4 rounded-lg bg-light-white hover:bg-slate-200 hover:dark:bg-[#444654] dark:border-dark-grey focus:ring-offset-indigo-200 text-black dark:text-white transition ease-in-out duration-300 text-center text-base font-semibold shadow-md focus:outline-none block mx-auto;
+  .use__dalle{
+    @apply text-xs text-black/40 dark:text-white/40 pr-1 pl-0 -mt-1;
   }
 
   .message__img {
@@ -134,7 +134,7 @@
   }
 
   .chatview__btn-send {
-    @apply absolute p-1 rounded-md text-gray-500 bottom-3 right-1 hover:bg-gray-100 dark:hover:text-gray-400 dark:hover:bg-gray-900 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent;
+    @apply absolute p-1 rounded-md text-gray-500 bottom-6 right-1 hover:bg-gray-100 dark:hover:text-gray-400 dark:hover:bg-gray-900 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent;
   }
 
   .chatview__btn-send:disabled {
@@ -180,7 +180,7 @@
   }
 
   .go_down {
-    @apply cursor-pointer absolute right-6 bottom-[150px] md:bottom-[120px] z-10 rounded-full border-gray-200 bg-gray-50 dark:bg-white/10 dark:text-gray-200 text-xl;
+    @apply cursor-pointer absolute right-6 bottom-[120px] md:bottom-[120px] z-10 rounded-full border-gray-200 bg-gray-50 dark:bg-white/10 dark:text-gray-200 text-xl;
   }
 
   /* Signin Page */

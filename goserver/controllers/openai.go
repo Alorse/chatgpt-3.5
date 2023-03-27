@@ -41,7 +41,7 @@ func CreateChatCompletion(c *gin.Context) {
 		},
 		{
 			Role:    openai.ChatMessageRoleUser,
-			Content: cleanedPrompt + "?",
+			Content: cleanedPrompt,
 		},
 	})
 

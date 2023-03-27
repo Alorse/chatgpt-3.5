@@ -16,8 +16,7 @@ const ChatView = () => {
   const inputRef = useRef()
   const fValueRef = useRef('')
   const [thinking, setThinking] = useState(false)
-  const options = ['ChatGPT', 'DALL·E']
-  const [selected, setSelected] = useState(options[0])
+  const [aiModel, setAiModel] = useState('davinci')
   const [room, setRoom] = useState(null)
   const [messages, setMessages, ] = useContext(ChatContext)
   const user = auth.currentUser.uid
@@ -32,7 +31,7 @@ const ChatView = () => {
   const scrollToBottom = useCallback(() => {
     setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-    }, selected === options[0] ? 0 : 500) // When it's dall-e it needs more time to render
+    }, aiModel === 'davinci' ? 0 : 500) // When it's dall-e it needs more time to render
   }, [])
 
   /**
@@ -76,7 +75,7 @@ const ChatView = () => {
             createdAt: new Date(message.CreatedAt),
             text: message.MessageText,
             ai: message.UserID === "1" ? true : false,
-            selected: `${selected}`
+            selected: `${aiModel}`
           }
           setMessages(newMsg)
         });
@@ -94,14 +93,17 @@ const ChatView = () => {
   const sendMessage = async (e) => {
     e.preventDefault()
 
-    const newMsg = fValueRef.current
+    let newMsg = fValueRef.current
     if(newMsg.trim().length === 0){
       return
     }
-    const aiModel = selected
+
+    if (newMsg.startsWith('/dalle')) {
+      newMsg = newMsg.replace('/dalle', '').trim()
+    }
 
     const BASE_URL = process.env.REACT_APP_BASE_URL
-    const PATH = aiModel === options[0] ? 'davinci' : 'dalle'
+    const PATH = aiModel === 'davinci' ? 'davinci' : 'dalle'
     const POST_URL = BASE_URL + PATH
 
     setThinking(true)
@@ -149,6 +151,12 @@ const ChatView = () => {
     } else {
       document.querySelector('.chatview__btn-send').setAttribute('disabled', true);
     }
+
+    if (fValueRef.current.startsWith('/dalle')) {
+      setAiModel('dalle')
+    } else {
+      setAiModel('davinci')
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -176,7 +184,6 @@ const ChatView = () => {
    */
   useEffect(() => {
     scrollToBottom()
-    console.log(messagesEndRef.current)
   }, [messages, thinking, scrollToBottom])
 
   /**
@@ -211,10 +218,6 @@ const ChatView = () => {
         </div>
       </main>
       <form className='form' onSubmit={sendMessage}>
-        <select value={selected} onChange={(e) => setSelected(e.target.value)} className="dropdown">
-          <option>{options[0]}</option>
-          <option>{options[1]}</option>
-        </select>
         <div className='chatview__container'>
           <textarea
             ref={inputRef}
@@ -224,6 +227,7 @@ const ChatView = () => {
             onKeyUp={handleKeyUp}
           />
           <button type="submit" className='chatview__btn-send' disabled><MdSend /></button>
+          <div className='use__dalle'>To generate images with DALL·E AI system use: <pre className='italic inline'>/dalle &#123;prompt&#125;</pre></div>
         </div>
       </form>
       <div className="copyright">

@@ -3,7 +3,7 @@ import SignIn from './pages/SignIn'
 import { ChatContextProvider } from './context/chatContext'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useState, useEffect } from "react";
-import bot from './assets/bot.ico'
+import bot from './assets/logo.ico'
 
 import { auth } from './firebase'
 
@@ -22,7 +22,7 @@ const App = () => {
     <ChatContextProvider>
       {isLoading ? (
         <div className='signin'>
-          <img className='w-8 h-8' src={bot} alt="" />
+          <img src={bot} alt="logo" />
         </div>
       ) : (
         <div>

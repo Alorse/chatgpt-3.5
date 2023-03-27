@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { MdClose,
+import {
   MdMenu,
   MdAdd,
   MdOutlineLogout,

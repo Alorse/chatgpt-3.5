@@ -117,10 +117,6 @@
     @apply text-center text-xs text-black/50 dark:text-white/50 px-4 pb-3 pl-16 pr-1 md:pl-0;
   }
 
-  .dropdown {
-    @apply dark:bg-light-grey h-10 px-4 rounded-lg bg-light-white hover:bg-slate-200 hover:dark:bg-[#444654] dark:border-dark-grey focus:ring-offset-indigo-200 text-black dark:text-white transition ease-in-out duration-300 text-center text-base font-semibold shadow-md focus:outline-none block mx-auto;
-  }
-
   .message__img {
     @apply rounded-lg shadow-lg bg-cover bg-gray-400 max-h-[512px] max-w-[512px] h-auto w-full duration-300 ease-out;
   }

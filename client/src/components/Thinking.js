@@ -1,12 +1,12 @@
 import React from 'react'
-import { AiOutlineRobot } from 'react-icons/ai'
+import bot from '../assets/logo.ico'
 
 const Thinking = () => {
   return (
     <div className='message-w'>
       <div className='message__wrapper flex'>
         <div className="message__pic">
-          <AiOutlineRobot />
+          <img className='w-8 h-8' src={bot} alt="GPT" />
         </div>
         <div className='loader_cointainer'>
           <div className="loader">

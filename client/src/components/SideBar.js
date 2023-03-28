@@ -77,7 +77,6 @@ const SideBar = ({user}) => {
       }
     } catch (error) {
       handleShowNotification(`The server is not responding, try again later.`)
-      upServer()
       setError(error);
     } finally {
       setLoading(false);
@@ -86,25 +85,6 @@ const SideBar = ({user}) => {
       }
     }
   };
-  
-  const upServer = async() => {
-    try {
-      let data;
-      const response = await fetch(`https://alorse.net/upgo.php`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      });
-      data = await response.json();
-      console.log(data)
-      if(data === 1){
-        window.location.reload()
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   const getItemNameById = (data, id) => {
     const item = data.find((item) => item.ID === id);

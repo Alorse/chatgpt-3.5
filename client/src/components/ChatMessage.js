@@ -1,5 +1,5 @@
 import React from 'react'
-import { AiOutlineRobot } from 'react-icons/ai'
+import bot from '../assets/logo.ico'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import moment from 'moment'
@@ -53,7 +53,7 @@ const ChatMessage = (props) => {
 
         <div className="message__pic">
           {
-            ai ? <AiOutlineRobot /> :
+            ai ? <img className='w-8 h-8' src={bot} alt="GPT" /> :
               <img className='cover w-10 h-10 rounded-full' loading='lazy' src={picUrl} alt='profile pic' />
           }
         </div>

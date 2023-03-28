@@ -62,7 +62,7 @@
   }
 
   .nav__item {
-    @apply p-4 flex h-12 items-center gap-x-4 w-screen rounded-md cursor-pointer hover:bg-light-white text-white text-base;
+    @apply p-2 flex h-10 items-center gap-x-4 w-screen rounded-md cursor-pointer hover:bg-light-white text-white text-base;
   }
   .menu {
     @apply flex-col flex-1 overflow-hidden overflow-y-auto border-b border-white/20 mr-2;
@@ -101,24 +101,24 @@
     @apply flex h-full flex-1 flex-col md:pl-[256px] duration-300 overflow-hidden;
   }
 
-  .sidebar.w-16 + .chatview{
-    @apply md:pl-8;
+  .sidebar.w-12 + .chatview {
+    @apply md:pl-12;
   }
 
   .chatview__chatarea {
-    @apply m-0 flex-grow w-full flex flex-col shadow-md pl-16 md:pl-0 overflow-y-auto;
+    @apply m-0 flex-grow w-full flex flex-col shadow-md pl-12 md:pl-0 overflow-y-auto;
   }
 
   .form {
-    @apply md:flex justify-between flex-col block items-stretch md:flex-row m-2 bottom-0 left-0 right-0 text-black dark:text-white duration-300 w-full mx-auto md:w-9/12 pl-16 pr-1 md:pl-0 sm:pr-4;
+    @apply md:flex justify-between flex-col block items-stretch md:flex-row m-2 bottom-0 left-0 right-0 text-black dark:text-white duration-300 w-full mx-auto md:w-9/12 pl-12 pr-1 md:pl-0 sm:pr-4;
   }
 
   .copyright{
-    @apply text-center text-xs text-black/60 dark:text-white/60 px-4 pb-3 pl-16 pr-1 md:pl-0;
+    @apply text-center text-xs text-black/60 dark:text-white/60 px-4 pb-3 pl-12 pr-1 md:pl-0;
   }
 
   .use__dalle{
-    @apply text-xs text-black/40 dark:text-white/40 pr-1 pl-0 -mt-1;
+    @apply text-[11px] md:text-xs text-black/40 dark:text-white/40 pr-1 pl-0 -mt-1;
   }
 
   .message__img {
@@ -172,7 +172,11 @@
   }
 
   .message__pic {
-    @apply h-10 w-10 bg-slate-200 mx-2 rounded-full flex items-center justify-center text-xl;
+    @apply h-10 w-10 mx-2 rounded-full flex items-center justify-center text-xl;
+    background-image: radial-gradient(circle farthest-corner at center, rgb(53 55 64) 0%, #1C262B 100%);
+  }
+  .dark .message__pic {
+    @apply bg-none;
   }
 
   .message__thinking {
@@ -180,7 +184,7 @@
   }
 
   .go_down {
-    @apply cursor-pointer absolute right-6 bottom-[120px] md:bottom-[120px] z-10 rounded-full border-gray-200 bg-gray-50 dark:bg-white/10 dark:text-gray-200 text-xl;
+    @apply cursor-pointer absolute right-6 bottom-[130px] md:bottom-[120px] z-10 rounded-full border-gray-200 bg-gray-50 dark:bg-white/10 dark:text-gray-200 text-xl;
   }
 
   /* Signin Page */

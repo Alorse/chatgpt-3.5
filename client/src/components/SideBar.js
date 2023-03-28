@@ -147,7 +147,7 @@ const SideBar = ({user}) => {
 
 
   return (
-    <section className={`sidebar ${open ? "w-64" : "w-16"}`}>
+    <section className={`sidebar ${open ? "w-64" : "w-12"}`}>
       <div className="sidebar__app-bar">
         <div className={`sidebar__app-logo ${!open && "scale-0 hidden"}`} onClick={() => setOpen(!open)}>
           <span><img className='w-16 h-16' src={bot} alt="GPT" /></span>

@@ -27,5 +27,6 @@ func main() {
 	r.POST("/dalle", controllers.CreateImage)
 	r.GET("/get-rooms", controllers.ShowRoomsByUser)
 	r.GET("/get-messages", controllers.ShowMessagesByRoom)
+	r.DELETE("/delete-room/:id", controllers.RemoveRoom)
 	r.Run()
 }

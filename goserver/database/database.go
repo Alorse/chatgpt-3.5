@@ -49,7 +49,7 @@ func NewDatabase(driver string, name string, user string, password string, host 
 // Connects to the database
 func (t *Database) Connect() error {
 	t.connectionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", t.user, t.password, t.host, t.port, t.name)
-	db, err := sql.Open(t.driver, t.connectionString + "?multiStatements=true&parseTime=true&interpolateParams=true")
+	db, err := sql.Open(t.driver, t.connectionString+"?multiStatements=true&parseTime=true&interpolateParams=true")
 	if err != nil {
 		return err
 	}
@@ -73,4 +73,9 @@ func (t *Database) GetConnection() *sql.DB {
 // get Database
 func (t *Database) GetDB() *sql.DB {
 	return t.db
+}
+
+// get ErrNoRows
+func (t *Database) ErrNoRows() error {
+	return sql.ErrNoRows
 }

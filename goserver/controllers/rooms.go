@@ -101,3 +101,49 @@ func ShowRoomsByUser(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, rooms)
 }
+
+func deleteRoom(roomID string) error {
+	sql := `DELETE FROM rooms WHERE id = ?`
+	result, err := DB.GetConnection().Exec(sql, roomID)
+	if err != nil {
+		return err
+	}
+
+	numRows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if numRows == 0 {
+		return DB.ErrNoRows()
+	}
+
+	return nil
+}
+
+func RemoveRoom(c *gin.Context) {
+	roomID := c.Param("id")
+	err := deleteRoomAndMessages(roomID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"status": "success"})
+	}
+}
+
+func deleteRoomAndMessages(roomID string) error {
+	// Borra todos los mensajes que corresponden a la sala de chat
+	sql := `DELETE FROM messages WHERE room_id = ?`
+	_, err := DB.GetConnection().Exec(sql, roomID)
+	if err != nil {
+		return err
+	}
+
+	// Borra la sala de chat
+	err = deleteRoom(roomID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

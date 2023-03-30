@@ -70,6 +70,19 @@ const SideBar = ({user}) => {
     setIsOpen(true);
   }
 
+  function handleEditRoomName(e) {
+    e.preventDefault()
+    setNotification({
+      show: true,
+      message: 'Crespo no desesperes, pronto funcionará.',
+    });
+    setTimeout(() => {
+      setNotification({
+        show: false,
+      });
+    }, 3000)
+  }
+
   function handleCloseModal() {
     setIsOpen(false);
   }
@@ -150,10 +163,10 @@ const SideBar = ({user}) => {
                     <div className="right-shadow"></div>
                   </div>
                   <div className={`nav ${room.ID === roomId ? 'flex right-1 z-10 text-gray-300 visible' : 'hidden'}`}>
-                    <button className="text-lg p-1 hover:text-white">
+                    <button className="text-lg p-1 hover:text-white" onClick={handleEditRoomName} title="Rename room">
                       <BiRename />
                     </button>
-                    <button className="text-lg p-1 hover:text-white" onClick={handleOpenModal}>
+                    <button className="text-lg p-1 hover:text-white" onClick={handleOpenModal} title="Delete room">
                       <MdDeleteForever />
                     </button>
                   </div>

@@ -148,7 +148,7 @@
   }
 
   .message-w {
-    @apply xl:w-9/12 w-full mx-auto flex justify-between px-3 py-5;
+    @apply xl:w-10/12 w-full mx-auto flex justify-between px-3 py-5;
   }
 
   .message__wrapper {
@@ -248,10 +248,10 @@
     @apply text-white text-center p-2 absolute bottom-0;
   }
 
-  .flex-row-reverse {
+  .chatview__chatarea .flex-row-reverse {
     @apply bg-gray-100;
   }
-  .dark .flex-row-reverse {
+  .dark .chatview__chatarea .flex-row-reverse {
     background-image: radial-gradient(circle farthest-corner at center, rgb(53 55 64) 0%, #1C262B 100%);
   }
 

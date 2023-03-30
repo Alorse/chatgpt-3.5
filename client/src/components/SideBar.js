@@ -6,12 +6,15 @@ import {
   MdOutlineQuestionAnswer,
  } from 'react-icons/md'
 import { CiChat1 } from 'react-icons/ci'
-import { AiOutlineLoading3Quarters } from 'react-icons/ai'
+import { BiRename } from 'react-icons/bi'
+import { MdDeleteForever } from 'react-icons/md'
 import bot from '../assets/logo.ico'
 import DarkMode from './DarkMode'
+import Thinking from './Thinking'
 import { auth } from '../firebase'
 import { useLocation } from "react-router-dom";
 import Notification from './Notification';
+import Modal from './Modal';
 
 /**
  * A sidebar component that displays a list of nav items and a toggle 
@@ -27,6 +30,7 @@ const SideBar = ({user}) => {
   const location = useLocation();
   const roomId = location.pathname.split("/room/")[1];
   const [notification, setNotification] = useState({show: false, message: ''});
+  const [isOpen, setIsOpen] = useState(false);
 
   function handleResize() {
     window.innerWidth <= 768 ? setOpen(false) : setOpen(true)
@@ -58,6 +62,20 @@ const SideBar = ({user}) => {
       show: true,
       message: message,
     });
+  }
+
+  function handleOpenModal(e) {
+    e.preventDefault()
+    setIsOpen(true);
+  }
+
+  function handleCloseModal() {
+    setIsOpen(false);
+  }
+
+  function handleDelete() {
+    // Realizar la acción de eliminar aquí
+    setIsOpen(false);
   }
 
   const GetUserRooms = async () => {
@@ -93,7 +111,7 @@ const SideBar = ({user}) => {
 
   const renderRooms = () => {
     if (loading) {
-      return <AiOutlineLoading3Quarters />;
+      return <Thinking />;
     }
 
     if (error) {
@@ -116,6 +134,14 @@ const SideBar = ({user}) => {
                   <div className='flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative'>
                     {room.Name}
                     <div className="right-shadow"></div>
+                  </div>
+                  <div className={`nav ${room.ID === roomId ? 'flex right-1 z-10 text-gray-300 visible' : 'hidden'}`}>
+                    <button className="text-lg p-1 hover:text-white">
+                      <BiRename />
+                    </button>
+                    <button className="text-lg p-1 hover:text-white" onClick={handleOpenModal}>
+                      <MdDeleteForever />
+                    </button>
                   </div>
                 </span>
               </div>
@@ -172,6 +198,7 @@ const SideBar = ({user}) => {
           <Notification message={notification.message} />
         )}
       </div>
+      <Modal isOpen={isOpen} onClose={handleCloseModal} onDelete={handleDelete} />
     </section>
   )
 }

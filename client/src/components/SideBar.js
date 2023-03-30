@@ -31,6 +31,7 @@ const SideBar = ({user}) => {
   const roomId = location.pathname.split("/room/")[1];
   const [notification, setNotification] = useState({show: false, message: ''});
   const [isOpen, setIsOpen] = useState(false);
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   function handleResize() {
     window.innerWidth <= 768 ? setOpen(false) : setOpen(true)
@@ -74,12 +75,25 @@ const SideBar = ({user}) => {
   }
 
   function handleDelete() {
-    // Realizar la acción de eliminar aquí
-    setIsOpen(false);
+    fetch(`${BASE_URL}delete-room/${roomId}`, {
+      method: 'DELETE'
+    })
+    .then(response => {
+      if (response.ok) {
+        setIsOpen(false);
+        newChat()
+      } else {
+        // La solicitud falló
+        throw new Error('Error en la solicitud DELETE');
+      }
+    })
+    .catch(error => {
+      // Manejar el error aquí
+      console.error(error);
+    });
   }
 
   const GetUserRooms = async () => {
-    const BASE_URL = process.env.REACT_APP_BASE_URL;
     const params = new URLSearchParams({ id: userData.uid });
     let data;
     try {

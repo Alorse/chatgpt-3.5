@@ -4,10 +4,10 @@ import {
   MdAdd,
   MdOutlineLogout,
   MdOutlineQuestionAnswer,
- } from 'react-icons/md'
-import { CiChat1 } from 'react-icons/ci'
-import { BiRename } from 'react-icons/bi'
-import { MdDeleteForever } from 'react-icons/md'
+} from 'react-icons/md'
+import { BsChatLeft } from 'react-icons/bs'
+import { BiRename, BiCheck } from 'react-icons/bi'
+import { MdDeleteForever, MdClose } from 'react-icons/md'
 import bot from '../assets/logo.ico'
 import DarkMode from './DarkMode'
 import Thinking from './Thinking'
@@ -22,15 +22,16 @@ import Modal from './Modal';
  * 
  * @param {Object} props - The properties for the component.
  */
-const SideBar = ({user}) => {
+const SideBar = ({ user }) => {
   const [open, setOpen] = useState(true)
   const [userData, setUserData] = useState(user)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
   const roomId = location.pathname.split("/room/")[1];
-  const [notification, setNotification] = useState({show: false, message: ''});
+  const [notification, setNotification] = useState({ show: false, message: '' });
   const [isOpen, setIsOpen] = useState(false);
+  const [editingRoomId, setEditingRoomId] = useState(null);
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   function handleResize() {
@@ -46,7 +47,7 @@ const SideBar = ({user}) => {
       window.removeEventListener("resize", handleResize)
     }
   }, []);
-  
+
   const newChat = () => {
     window.location.href = process.env.REACT_APP_PUBLIC_URL;
   }
@@ -70,17 +71,44 @@ const SideBar = ({user}) => {
     setIsOpen(true);
   }
 
-  function handleEditRoomName(e) {
+  function handleEditRoomName(e, room) {
     e.preventDefault()
-    setNotification({
-      show: true,
-      message: 'Crespo no desesperes, pronto funcionará.',
-    });
-    setTimeout(() => {
-      setNotification({
-        show: false,
+    setEditingRoomId(room.ID);
+    if (room.ID != null) {
+      setTimeout(() => {
+        document.getElementById(`room-name-input-${room.ID}`).focus()
+      }, 100)
+    }
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      handleSaveRoomName(e)
+    }
+  }
+
+  function handleSaveRoomName(e) {
+    e.preventDefault()
+    // Obtener el nuevo nombre de la sala desde un input
+    const newName = document.getElementById(`room-name-input-${roomId}`).value;
+    // Llamar al endpoint de actualización de nombre
+    fetch(`${BASE_URL}rename-room/${roomId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: newName }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setTimeout(() => {
+          document.getElementById(`room-name-span-${roomId}`).innerHTML = newName
+        }, 100)
+        setEditingRoomId(null);
+      })
+      .catch((error) => {
+        console.error(error);
       });
-    }, 3000)
   }
 
   function handleCloseModal() {
@@ -91,19 +119,19 @@ const SideBar = ({user}) => {
     fetch(`${BASE_URL}delete-room/${roomId}`, {
       method: 'DELETE'
     })
-    .then(response => {
-      if (response.ok) {
-        setIsOpen(false);
-        newChat()
-      } else {
-        // La solicitud falló
-        throw new Error('Error en la solicitud DELETE');
-      }
-    })
-    .catch(error => {
-      // Manejar el error aquí
-      console.error(error);
-    });
+      .then(response => {
+        if (response.ok) {
+          setIsOpen(false);
+          newChat()
+        } else {
+          // La solicitud falló
+          throw new Error('Error en la solicitud DELETE');
+        }
+      })
+      .catch(error => {
+        // Manejar el error aquí
+        console.error(error);
+      });
   }
 
   const GetUserRooms = async () => {
@@ -118,14 +146,14 @@ const SideBar = ({user}) => {
       });
       data = await response.json();
       if (data) {
-        setUserData(prevState => ({...prevState, rooms: data}));
+        setUserData(prevState => ({ ...prevState, rooms: data }));
       }
     } catch (error) {
       handleShowNotification(`The server is not responding, try again later.`)
       setError(error);
     } finally {
       setLoading(false);
-      if(roomId){
+      if (roomId) {
         document.title = getItemNameById(data, roomId);
       }
     }
@@ -150,30 +178,75 @@ const SideBar = ({user}) => {
     }
 
     return (
-      <div className='menu'>
-          {userData.rooms.map(room => 
-            <a key={room.ID} href={process.env.REACT_APP_PUBLIC_URL + 'room/' + room.ID} title={room.Name}>
-              <div className={`nav ${room.ID === roomId ? 'active' : ''}`}>
-                <span className="nav__item">
-                  <div className="nav__icons">
-                    <CiChat1 />
+      <div className="menu">
+        {userData.rooms.map((room) => (
+          <a
+            key={room.ID}
+            href={editingRoomId !== room.ID ? process.env.REACT_APP_PUBLIC_URL + "room/" + room.ID : '#'}
+            title={room.Name}
+          >
+            <div
+              className={`nav ${room.ID === roomId ? "active" : ""}`}
+            >
+              <span className="nav__item">
+                <div className="nav__icons">
+                  <BsChatLeft />
+                </div>
+                {editingRoomId === room.ID ? (
+                  <div className="flex items-center">
+                    <input
+                      id={`room-name-input-${room.ID}`}
+                      type="text"
+                      defaultValue={room.Name}
+                      onKeyDown={handleKeyDown}
+                      className="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative p-1 bg-dark-grey outline-0"
+                    />
+                    <button
+                      className="text-lg"
+                      onClick={handleSaveRoomName}
+                    >
+                      <BiCheck />
+                    </button>
+                    <button
+                      className="text-lg"
+                      onClick={(e) => handleEditRoomName(e, {room:{ID: null}})}
+                    >
+                      <MdClose />
+                    </button>
                   </div>
-                  <div className='flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative'>
-                    {room.Name}
+                ) : (
+                  <div className="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative">
+                    <span id={`room-name-span-${room.ID}`}>{room.Name}</span>
                     <div className="right-shadow"></div>
                   </div>
-                  <div className={`nav ${room.ID === roomId ? 'flex right-1 z-10 text-gray-300 visible' : 'hidden'}`}>
-                    <button className="text-lg p-1 hover:text-white" onClick={handleEditRoomName} title="Rename room">
-                      <BiRename />
-                    </button>
-                    <button className="text-lg p-1 hover:text-white" onClick={handleOpenModal} title="Delete room">
-                      <MdDeleteForever />
-                    </button>
-                  </div>
-                </span>
-              </div>
-            </a>)
-          }
+                )}
+                <div
+                  className={`nav ${room.ID === roomId ? "flex right-1 z-10 text-gray-300 visible" : "hidden"
+                    }`}
+                >
+                  {editingRoomId !== room.ID && (
+                    <>
+                      <button
+                        className="text-lg p-1 hover:text-white"
+                        onClick={(e) => handleEditRoomName(e, room)}
+                        title="Rename room"
+                      >
+                        <BiRename />
+                      </button>
+                      <button
+                        className="text-lg p-1 hover:text-white"
+                        onClick={handleOpenModal}
+                        title="Delete room"
+                      >
+                        <MdDeleteForever />
+                      </button>
+                    </>
+                  )}
+                </div>
+              </span>
+            </div>
+          </a>
+        ))}
       </div>
     );
   };

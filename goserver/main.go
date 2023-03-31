@@ -28,5 +28,6 @@ func main() {
 	r.GET("/get-rooms", controllers.ShowRoomsByUser)
 	r.GET("/get-messages", controllers.ShowMessagesByRoom)
 	r.DELETE("/delete-room/:id", controllers.RemoveRoom)
+	r.PATCH("/rename-room/:id", controllers.RenameRoom)
 	r.Run()
 }

@@ -147,3 +147,39 @@ func deleteRoomAndMessages(roomID string) error {
 
 	return nil
 }
+
+func renameRoom(roomID string, roomName string) error {
+	sql := `UPDATE rooms SET Name = ? WHERE ID = ?`
+	result, err := DB.GetConnection().Exec(sql, roomName, roomID)
+	if err != nil {
+		return err
+	}
+
+	numRows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if numRows == 0 {
+		return DB.ErrNoRows()
+	}
+
+	return nil
+}
+
+func RenameRoom(c *gin.Context) {
+	roomID := c.Param("id")
+	var data struct {
+		Name string `json:"name" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	err := renameRoom(roomID, data.Name)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"status": "success"})
+	}
+}

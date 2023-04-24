@@ -80,7 +80,7 @@
   }
 
   .nav__icons {
-    @apply cursor-pointer duration-300 text-white text-xl;
+    @apply cursor-pointer duration-300 text-white;
   }
 
   .nav__bottom {

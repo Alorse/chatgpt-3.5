@@ -29,6 +29,17 @@ go mod download
 4. Add your openai api key inside `.env`
 5. Make sure you have added `.env` to your `.gitignore` file
 
+### MYSQL DB
+1. Import `goserver/database/schema.sql` to you MySQL server
+2. Complete MySQL DB credentials in `.env` file
+```bash
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=<DB_NAME>
+DB_USERNAME=<DB_USER>
+DB_PASSWORD=<DB_PASS>
+```
+
 ### Client
 1. Obtain your firebase credential from [here](https://firebase.google.com/products/realtime-database/)
 1. `cd client`

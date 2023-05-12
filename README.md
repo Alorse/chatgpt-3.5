@@ -30,7 +30,7 @@ go mod download
 5. Make sure you have added `.env` to your `.gitignore` file
 
 ### MYSQL DB
-1. Import `goserver/database/schema.sql` to you MySQL server
+1. Import `goserver/database/schema.sql` to your MySQL server
 2. Complete MySQL DB credentials in `.env` file
 ```bash
 DB_HOST=127.0.0.1
